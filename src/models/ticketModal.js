@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ticketSchema = new Schema({
-    ticketId: { type: String, required: true, unique: true },
-    customerId: { type: String, required: true },
-    categoryId: { type: String, required: true },
-    agentId:{type:String},
+    _id: { type: Number, required: true, unique: true },
+    customerId: { type: Number, required: true },
+    categoryId: { type: Number, required: true },
+    agentId:{type:Number},
     statusId: { type: String, default: 'Open' },
     priority: { type: String },
     subject: { type: String, required: true },
@@ -14,6 +14,11 @@ const ticketSchema = new Schema({
     updatedAt: { type: Date, default: Date.now },
     closedAt: {type: Date },
     communications: [{ type: Schema.Types.Mixed }]
+
+    // _id: { type: Number},
+    // ename:{type:String}
+
 });
 
-module.exports = mongoose.model('Ticket', ticketSchema);
+module.exports = mongoose.model('tickets', ticketSchema);
+

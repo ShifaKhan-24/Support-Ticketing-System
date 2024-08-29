@@ -18,7 +18,8 @@ app.use('/api', ticketRoutes);
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI  || 'mongodb://127.0.0.1:27017/support_ticketing_system', {
-   
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 }).then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
