@@ -9,11 +9,12 @@ app.use(express.json());
 
 // Routes
 const ticketRoutes = require('./src/routes/ticketRoutes');
-// const userRoutes = require('./src/routes/userRoutes');
+const customerRoutes = require('./src/routes/customerRoutes');
 // const notificationRoutes = require('./src/routes/notificationRoutes');
 
 app.use('/api', ticketRoutes);
-// app.use('/api', userRoutes);
+console.log("customer routes - ", typeof customerRoutes);
+app.use('/api', customerRoutes);
 // app.use('/api', notificationRoutes);
 
 // Database Connection
