@@ -1,5 +1,5 @@
 const Ticket = require('../models/ticketModel');
-const { createNotification } = require('../controllers/notificationController'); // Import the notification controller
+const { createNotificationForTicket } = require('../controllers/notificationController'); // Import the notification controller
 
 exports.createTicket = async (req, res) => {
     try {
@@ -11,7 +11,7 @@ exports.createTicket = async (req, res) => {
             userId: ticket.customerId, // Assuming customerId is the user who should be notified
             message: `A new ticket has been created with the subject: ${ticket.subject}`
         };
-        await createNotification(notificationData ); // Reuse the notification creation logic
+        await createNotificationForTicket(notificationData ); // Reuse the notification creation logic
 
         res.status(201).json(ticket);
     } catch (error) {
