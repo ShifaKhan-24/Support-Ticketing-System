@@ -1,17 +1,20 @@
 {
   "name": "ticketsupport",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "A support ticketing system",
   "dependencies": {
+    "axios": "^1.4.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "mongoose": "^8.5.4"
+    "mongoose": "^8.5.4",
+    "nodemailer": "^6.9.4",
+    "ticketsupport": "file:"
   }
 }

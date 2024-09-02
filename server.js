@@ -10,12 +10,14 @@ app.use(express.json());
 // Routes
 const ticketRoutes = require('./src/routes/ticketRoutes');
 const customerRoutes = require('./src/routes/customerRoutes');
+const notificationRoutes = require('./src/routes/notificationRoutes');
+// const userRoutes = require('./src/routes/userRoutes');
 // const notificationRoutes = require('./src/routes/notificationRoutes');
 
 app.use('/api', ticketRoutes);
-console.log("customer routes - ", typeof customerRoutes);
 app.use('/api', customerRoutes);
-// app.use('/api', notificationRoutes);
+// app.use('/api', userRoutes);
+app.use('/api', notificationRoutes);
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI  || 'mongodb://127.0.0.1:27017/support_ticketing_system', {
