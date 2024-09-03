@@ -1,23 +1,30 @@
 const Ticket = require('../models/ticketModel');
-const { createNotificationForTicket } = require('../controllers/notificationController'); // Import the notification controller
+const { createNotification } = require('../controllers/notificationController'); // Import the notification controller
+const axios = require('axios');
+const { assignAgent } = require('../services/ticketAssignmentService');
+
 
 exports.createTicket = async (req, res) => {
     try {
         const ticket = new Ticket(req.body);
-<<<<<<< HEAD
-        await ticket.save()
-        
-=======
+        await ticket.save();
+
+        const assignedAgentId = await assignAgent(ticket.categoryId);
+        ticket.agentId = assignedAgentId;
         await ticket.save();
 
         // Create a notification after the ticket is saved
         const notificationData = {
-            userId: ticket.customerId, // Assuming customerId is the user who should be notified
+            userId: ticket.customerId,
             message: `A new ticket has been created with the subject: ${ticket.subject}`
         };
-        await createNotificationForTicket(notificationData ); // Reuse the notification creation logic
 
->>>>>>> feature/notification-service-setup
+        try {
+            await axios.post('http://localhost:3000/api/notifications', notificationData);
+        } catch (error) {
+            console.error('Error sending notification:', error.message);
+        }
+
         res.status(201).json(ticket);
     } catch (error) {
         res.status(400).json({ error: error.message });

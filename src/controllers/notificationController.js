@@ -1,53 +1,37 @@
+// src/controllers/notificationController.js
+
 const Notification = require('../models/notificationModel');
 const { sendEmail } = require('../services/notificationService');
 
-// Helper function for notification creation logic
-const createNotificationLogic = async (userId, message) => {
-    if (!userId || !message) {
-        throw new Error('userId and message are required.');
-    }
-
-    const notification = new Notification({ userId, message });
-    await notification.save();
-
-    // Send email notification
-    try {
-        const recipientEmail = process.env.NOTIFICATION_EMAIL || 'default@example.com'; // Use environment variable or default
-        await sendEmail(recipientEmail, 'New Notification', message);
-    } catch (emailError) {
-        console.error('Error sending email:', emailError);
-        // Optionally, log the error or notify an admin
-    }
-
-    return notification;
-};
-
-// Controller function to handle endpoint requests
+// Controller function to handle notification creation without sending any response
 exports.createNotification = async (req, res) => {
     try {
         const { userId, message } = req.body;
+        console.log('Received data:', req.body);
+
 
         if (!userId || !message) {
-            return res.status(400).json({ error: 'userId and message are required.' });
+            console.error('Invalid data: userId and message are required.');
+            return;
         }
 
-        const notification = await createNotificationLogic(userId, message);
-        res.status(201).json(notification); // Send the created notification as a response
+        // Create the notification and save it to the database
+        const notification = new Notification({ userId, message });
+        await notification.save();
+
+        // Send the email notification
+        try {
+            await sendEmail(process.env.NOTIFICATION_EMAIL || 'sahilt626@gmail.com', 'New Notification', message);
+        } catch (emailError) {
+            console.error('Error sending email:', emailError);
+        }
+
+   
+        // Send a success response
+        res.status(201).json({ message: 'Notification created successfully' });
     } catch (error) {
         console.error('Error creating notification:', error);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
-
-// Function to be used in other controllers
-exports.createNotificationForTicket = async (notificationData) => {
-    try {
-        const { userId, message } = notificationData;
-        const notification = await createNotificationLogic(userId, message);
-        return notification;
-    } catch (error) {
-        console.error('Error creating notification:', error);
-        throw error; // Throw error to be handled by the calling function
     }
 };
 
