@@ -12,7 +12,7 @@ const assignAgent = async (ticketCategoryId) => {
     }
 
     // If multiple agents are found, randomly select one
-     
+    const randomIndex = Math.floor(Math.random() * agents.length);
     const assignedAgent = agents[randomIndex];
 
     return assignedAgent._id; // Return the ID of the selected agent
