@@ -3,7 +3,8 @@ const counterModal = require('./counter.model')
 
 const ticketSchema = new mongoose.Schema({
   ticket_id: { type: Number, unique: true }, // Auto-incremented ticket ID
-  categoryId:{type:String, required:true}, //biiling, technical, general or 1,2,3
+  customerEmail: { type: String, required: true },
+  categoryId:{type:String, required:true, ref:'categories'}, //biiling, technical, general or 1,2,3
   agentId:{type:Number},    // _id=1,2,
   status:{type:String},     // enum type - open-> in progress -> resolved -> 
   priority:{type:String,required:true},
