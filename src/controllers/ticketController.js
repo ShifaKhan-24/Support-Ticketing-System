@@ -4,10 +4,7 @@ const { createNotificationForTicket } = require('../controllers/notificationCont
 exports.createTicket = async (req, res) => {
     try {
         const ticket = new Ticket(req.body);
-<<<<<<< HEAD
-        await ticket.save()
-        
-=======
+
         await ticket.save();
 
         // Create a notification after the ticket is saved
@@ -17,7 +14,6 @@ exports.createTicket = async (req, res) => {
         };
         await createNotificationForTicket(notificationData ); // Reuse the notification creation logic
 
->>>>>>> feature/notification-service-setup
         res.status(201).json(ticket);
     } catch (error) {
         res.status(400).json({ error: error.message });
