@@ -10,11 +10,13 @@
   "license": "ISC",
   "description": "A support ticketing system",
   "dependencies": {
-    "axios": "^1.4.0",
+    "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^8.5.4",
+    "mongoose-sequence": "^6.0.1",
     "nodemailer": "^6.9.4",
-    "ticketsupport": "file:"
+    "ticketsupport": "file:",
+    "uuid": "^10.0.0"
   }
 }
