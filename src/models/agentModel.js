@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+// const User = require('./userModel')
 const agentSchema = new mongoose.Schema({
     _id: {
         type: Number,
@@ -20,4 +20,14 @@ const agentSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Agent', agentSchema);
+
+// const agentSchema = new mongoose.Schema({
+//     status: { type: String, enum: ['available', 'unavailable'], default: 'available' },
+//     assignedTickets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ticket' }],
+//     categoryId:{type:Number,required:true}
+// // });
+
+// const Agent = User.discriminator('agent', agentSchema);
+
+const Agent = mongoose.model('agents',agentSchema)
+module.exports = Agent;

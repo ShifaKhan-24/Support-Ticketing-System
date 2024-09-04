@@ -1,4 +1,4 @@
-const Customer = require("../models/customerModal");
+const Customer = require("../models/customerModel");
 
 exports.getCustomerById = async (req, res) =>{
     try{
