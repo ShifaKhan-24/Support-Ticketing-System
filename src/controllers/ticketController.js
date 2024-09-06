@@ -1,16 +1,23 @@
 const Ticket = require('../models/ticketModel');
-const { createNotification } = require('../controllers/notificationController'); // Import the notification controller
 const axios = require('axios');
 const { assignAgent } = require('../services/ticketAssignmentService');
 
 
 exports.createTicket = async (req, res) => {
     try {
-        const ticket = new Ticket(req.body);
-        await ticket.save();
+        // Create the ticket object without agentId
+        const ticket = new Ticket({
+            ...req.body,
+            agentId: undefined  // Explicitly set agentId as undefined at first
+        });
 
-        const assignedAgentId = await assignAgent(ticket.categoryId);
+        // Assign an agent based on the ticket's categoryName
+        const assignedAgentId = await assignAgent(ticket.categoryName);
+        
+        // Now assign the selected agentId
         ticket.agentId = assignedAgentId;
+
+        // Save the ticket with the agentId
         await ticket.save();
 
         // Create a notification after the ticket is saved
@@ -30,6 +37,7 @@ exports.createTicket = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
 
 exports.getTicket = async (req, res) => {
     try {

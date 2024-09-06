@@ -1,21 +1,22 @@
-// src/services/ticketAssignmentService.js
-
 const Agent = require('../models/agentModel');
 
-// Function to assign an agent based on category_id
-const assignAgent = async (ticketCategoryId) => {
-    // Find agents who match the ticket's category_id
-    const agents = await Agent.find({ categoryId: ticketCategoryId });
+const assignAgent = async (ticketCategoryName) => {
+    // Find agents who match the ticket's categoryName
+    const agents = await Agent.find({ categoryName: ticketCategoryName });
 
     if (agents.length === 0) {
-        throw new Error(`No agents available for category ID ${ticketCategoryId}`);
+        throw new Error(`No agents available for category: ${ticketCategoryName}`);
     }
 
-    // If multiple agents are found, randomly select one
+    // Randomly select one if multiple agents are found
     const randomIndex = Math.floor(Math.random() * agents.length);
     const assignedAgent = agents[randomIndex];
+    
+    // Log the full agent details including agentId
+    console.log("Assigned agent:", assignedAgent);
 
-    return assignedAgent._id; // Return the ID of the selected agent
+    // Ensure agentId is returned
+    return assignedAgent.agentId; // Return the custom agentId
 };
 
 module.exports = { assignAgent };

@@ -1,33 +1,33 @@
 const mongoose = require('mongoose');
-// const User = require('./userModel')
-const agentSchema = new mongoose.Schema({
-    _id: {
-        type: Number,
-        unique: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    categoryId: { 
-        type: Number, 
-        required: true 
-    }
+const counterModal = require('./counter.model')
+const Schema = mongoose.Schema;
+
+const agentSchema = new Schema({
+  agentId: { type: Number, unique: true},
+  email:{type:String,required:true,ref:'users'},
+  userId: { type: Schema.Types.ObjectId, ref: 'users', required: true }, // Link to the User model
+  categoryName: { type: String, required: true },  // Specific field for agents
+  availabilityStatus: { type: String, default: 'available' },
 });
 
+agentSchema.pre('save', async function (next) {
+  if (this.isNew) {
+    console.log("New document, incrementing agentId...");
+    try {
+      const counter = await counterModal.findByIdAndUpdate(
+        { _id: 'agentId' },
+        { $inc: { sequence_value: 1 } },
+        { new: true, upsert: true }
+      );
+      this.agentId = counter.sequence_value;
+      console.log("Generated agentId:", this.agentId);
+    } catch (error) {
+      return next(error);
+    }
+  }
+  this.updated_at = Date.now();
+  next();
+});
 
-// const agentSchema = new mongoose.Schema({
-//     status: { type: String, enum: ['available', 'unavailable'], default: 'available' },
-//     assignedTickets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ticket' }],
-//     categoryId:{type:Number,required:true}
-// // });
-
-// const Agent = User.discriminator('agent', agentSchema);
-
-const Agent = mongoose.model('agents',agentSchema)
-module.exports = Agent;
+const Agent = mongoose.model('Agent', agentSchema);
+module.exports = Agent
