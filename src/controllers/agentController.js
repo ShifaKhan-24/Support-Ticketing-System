@@ -99,7 +99,7 @@ exports.getAgentsByCategory = async (req, res) => {
 // Update an agent
 exports.updateAgent = async (req, res) => {
     try {
-        const updatedAgent = await Agent.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedAgent = await Agent.findByIdAndUpdate(req.params.agentId, req.body, { new: true });
         res.json(updatedAgent);
     } catch (error) {
         res.status(400).json({ message: error.message });

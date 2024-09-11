@@ -19,6 +19,7 @@ exports.createUser = async (req, res) => {
         } else if (user.role === 'customer') {
             const customer = new Customer({
                 userId: user._id,
+               
                 phone: req.body.phone,
                 address: req.body.address
             });
@@ -121,9 +122,5 @@ exports.getAllAgents = async (req, res) => {
 exports.getAgentTickets  =async (req, res) =>{
     res.status(200).json({message:"Tickets assigned to agent"})
 }
-exports.getManagerData = async (req, res) => {
-  
-       res.status(200).json({message:"Manager Data found"})
-    
-};
+
 

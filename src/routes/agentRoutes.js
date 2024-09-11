@@ -14,8 +14,8 @@ const userController = require('../controllers/userController')
 // Agent Routes
 // router.post('/agents',agentController.createAgent)
 router.get('/agents', agentController.getAllAgents);
-router.get('/agent/category/:categoryName', agentController.getAgentsByCategory);
-router.put('/agent/:id', agentController.updateAgent);
+router.get('/agents/category/:categoryName', agentController.getAgentsByCategory);
+router.put('/agents/:id', agentController.updateAgent);
 router.delete('/agent/:id', agentController.deleteAgent);
 module.exports = router;
 

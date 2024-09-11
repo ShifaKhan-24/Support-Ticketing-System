@@ -15,11 +15,16 @@ const userController = require('../controllers/userController');
 // router.get('/customer/tickets', auth, roleCheck(['customer']), userController.getCustomerTickets);
 
 // // CRUD operations for users
+
+router.get('/agents', userController.getAllAgents); // Get all agents
+router.get('/email/:email', userController.getCustomerByEmail); // Get customer by email
+
 router.post('/', userController.createUser);
 router.get('/', userController.getAllUsers); // Optionally filter by role
 router.get('/:id', userController.getUserById);
 router.put('/:id', userController.updateUserById);
 router.delete('/:id', userController.deleteUserById);
+
 
 // // Additional routes
 // router.get('/customers/email/:email', userController.getCustomerByEmail); // Get customer by email

@@ -8,6 +8,7 @@ const customerSchema = new Schema({
     customerId: { type: Number, unique: true },
     userId: { type: Schema.Types.ObjectId, ref: 'users', required: true }, // Link to the User model
     phone: { type: String, required: true },
+   
     address: { type: String },  // Customer-specific field
   });
   
@@ -28,14 +29,7 @@ const customerSchema = new Schema({
       }
       this.updated_at = Date.now();
       next();
-  });
-  
-// const customerSchema = new mongoose.Schema({
-//     address: { type: String },
-//     phone: { type: String },
-// });
-
-// const Customer = User.discriminator('customer', customerSchema);
+  });;
 
 const Customer = mongoose.model('customers',customerSchema)
 module.exports = Customer;
