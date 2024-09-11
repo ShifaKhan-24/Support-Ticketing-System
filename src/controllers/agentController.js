@@ -1,5 +1,5 @@
 // src/controllers/agentController.js
-
+const Agent = require('../models/agentModel');
 // const agentService = require('../services/agentService');
 
 // Create a new agent
@@ -22,19 +22,17 @@
 //     }
 // };
 
-// // Get agent by ID
-// const getAgentById = async (req, res) => {
-//     try {
-//         const agent = await agentService.getAgentById(req.params.id);
-//         if (agent) {
-//             res.status(200).json(agent);
-//         } else {
-//             res.status(404).json({ error: 'Agent not found' });
-//         }
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
+// Get agent by ID
+exports.getAgentById = async (req,res) => {
+    try {
+        const agent = await Agent.find({agentId:req.params.agentId}).populate('userId');
+        res.status(200).json(agent);
+    } catch {
+        res.status(404).json({ error: 'Agent not found' });
+    }
+
+};
+
 
 // // Update agent by ID
 // const updateAgentById = async (req, res) => {
@@ -71,10 +69,6 @@
 //     updateAgentById,
 //     deleteAgentById
 // };
-
-const Agent = require('../models/agentModel');
-
-
 
 // Get all agents with user details
 exports.getAllAgents = async (req, res) => {

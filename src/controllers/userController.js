@@ -113,6 +113,7 @@ exports.getAllAgents = async (req, res) => {
     try {
         const agents = await User.find({ role: 'agent' });
         res.json(agents);
+        
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

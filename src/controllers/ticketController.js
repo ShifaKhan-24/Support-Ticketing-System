@@ -64,6 +64,15 @@ exports.getAllTickets = async (req, res) => {
     }
 };
 
+exports.getTicketByCategory = async (req,res)=>{
+    try{
+        const tickets = await Ticket.find({categoryName:req.params.categoryName});
+        if (tickets.length === 0) return res.status(404).json({ error: 'No tickets found for this category' });
+        res.json(tickets);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
 exports.updateTicket = async (req, res) => {
     try {
         const ticket = await Ticket.findByIdAndUpdate(req.params.id, req.body, {
@@ -81,6 +90,7 @@ exports.updateTicket = async (req, res) => {
 exports.deleteTicket = async (req,res) =>{
     try{
         const ticket =  await Ticket.findByIdAndDelete(req.params.id)
+        console.log(ticket)
         if(!ticket) return res.status(404).json({ error: 'Ticket not found' })
             res.json({ message: 'Ticket deleted successfully' });
     } catch (error) {
