@@ -6,7 +6,7 @@ const userController = require('../controllers/userController')
 // router.post('/agents', agentController.createAgent);
 // router.get('/agents', userController.getAllAgents);
 // console.log(userController.getAllAgents);
-// router.get('/agents/:id', agentController.getAgentById);
+router.get('/agents/:id', agentController.getAgentById);
 // router.put('/agents/:id', agentController.updateAgentById);
 // router.delete('/agents/:id', agentController.deleteAgentById);
 
