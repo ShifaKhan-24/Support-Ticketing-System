@@ -1,26 +1,27 @@
 const Ticket = require('../models/ticketModel');
 const axios = require('axios');
 const { assignAgent } = require('../services/ticketAssignmentService');
+const Agent = require('../models/agentModel')
+
+
 
 
 exports.createTicket = async (req, res) => {
     try {
-        // Create the ticket object without agentId
         const ticket = new Ticket({
             ...req.body,
             agentId: undefined  // Explicitly set agentId as undefined at first
         });
 
-        // Assign an agent based on the ticket's categoryName
-        const assignedAgentId = await assignAgent(ticket.categoryName);
-        
-        // Now assign the selected agentId
-        ticket.agentId = assignedAgentId;
+        // Automatically assign an agent only if the ticket is not manually assigned
+        if (!ticket.assignedByManager) {
+            const assignedAgentId = await assignAgent(ticket.categoryName);
+            ticket.agentId = assignedAgentId;
+        }
 
-        // Save the ticket with the agentId
         await ticket.save();
 
-        // Create a notification after the ticket is saved
+    
         const notificationData = {
             userId: ticket.customerEmail,
             message: `A new ticket has been created with the subject: ${ticket.subject}`
@@ -89,3 +90,36 @@ exports.deleteTicket = async (req,res) =>{
     }
     
 }
+// controllers/ticketController.js
+
+exports.assignAgentByManager = async (req, res) => {
+    try {
+        const { agentId } = req.body; // Get agentId from request body
+        const ticketId = req.params.id;
+
+        // Find the ticket
+        const ticket = await Ticket.findById(ticketId);
+        if (!ticket) {
+            return res.status(404).json({ error: 'Ticket not found' });
+        }
+
+        // Check if the agent with the given agentId exists in the Agent collection
+        const agent = await Agent.findOne({ agentId });
+        if (!agent) {
+            return res.status(404).json({ error: `Agent with agentId ${agentId} not found` });
+        }
+
+        // Update the ticket with the new agentId and mark as manually assigned
+        ticket.agentId = agentId;
+        ticket.assignedByManager = true;
+        await ticket.save();
+
+        // Optionally: Update the agent's assigned tickets or status (e.g., increase their workload count or availability status)
+        // agent.assignedTickets = agent.assignedTickets ? agent.assignedTickets + 1 : 1; // Increment the number of tickets
+        await agent.save(); // Save the updated agent
+
+        res.json({ message: 'Agent successfully assigned by manager', ticket });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};

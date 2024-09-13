@@ -1,16 +1,17 @@
 // src/controllers/agentController.js
 
+const Agent = require('../models/agentModel');
 // const agentService = require('../services/agentService');
 
 // Create a new agent
-// const createAgent = async (req, res) => {
-//     try {
-//         const agent = await agentService.createAgent(req.body);
-//         res.status(201).json(agent);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
+const createAgent = async (req, res) => {
+    try {
+        const agent = await agentService.createAgent(req.body);
+        res.status(201).json(agent);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
 // // Get all agents
 // const getAllAgents = async (req, res) => {
@@ -72,7 +73,6 @@
 //     deleteAgentById
 // };
 
-const Agent = require('../models/agentModel');
 
 
 
