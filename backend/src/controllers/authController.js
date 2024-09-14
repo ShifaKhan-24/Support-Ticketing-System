@@ -9,42 +9,34 @@ const { jwtSecret, jwtExpire } = require('../config/jwtConfig');
 console.log(" - ",Agent)
 // Register User
 exports.register = async (req, res) => {
-    try {
-      const { fullName, email, password, role, ...roleSpecificData } = req.body;
-  
+  try {
+      const { fullName, email, password, phone, address } = req.body;
+      
       // Check if user already exists
       let user = await User.findOne({ email });
       if (user) {
-        return res.status(400).json({ message: 'User already exists' });
+          return res.status(400).json({ message: 'User already exists' });
       }
-  
-      // Create new user
-      user = new User({ fullName, email, password: await bcrypt.hash(password, 10), role });
+      
+      // Create a new customer user (default role: 'customer')
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user = new User({ fullName, email, password: hashedPassword, role: 'customer' });
       await user.save();
-  
-      // Create role-specific data
-      if (role === 'agent') {
-        const lastAgent = await Agent.findOne().sort({ agentId: -1 });
-        const newAgentId = lastAgent && lastAgent.agentId ? Number(lastAgent.agentId) + 1 : 1;
-        await new Agent({ agentId: newAgentId, userId: user._id,email: email, ...roleSpecificData }).save();
-        console.log("Last agent found:", lastAgent);
 
-    }
-    else if (role === 'customer') {
-        const lastCustomer = await Customer.findOne().sort({ customerId: -1 });
-        const newCustomerId = lastCustomer && lastCustomer.customerId ? Number(lastCustomer.customerId) + 1 : 1;
-        await new Customer({ customerId: newCustomerId, userId: user._id, ...roleSpecificData }).save();
-      } else if (role === 'manager') {
-        const lastManager = await Manager.findOne().sort({ managerId: -1 });
-        const newManagerId = (lastManager ? lastManager.managerId + 1 : 1);
-        await new Manager({ managerId: newManagerId, userId: user._id, ...roleSpecificData }).save();
-      }
-  
-      res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
+      // Create a new customer entry
+      const customer = new Customer({
+          userId: user._id,
+          phone,
+          address
+      });
+      await customer.save();
+
+      res.status(201).json({ message: 'Customer registered successfully' });
+  } catch (error) {
       res.status(500).json({ message: error.message });
-    }
-  };
+  }
+};
+
   
 // Login User
 exports.login = async (req, res) => {
