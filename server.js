@@ -10,14 +10,14 @@ app.use(express.json());
 // Routes
 const authRoutes = require('./src/routes/authRoutes');
 const ticketRoutes = require('./src/routes/ticketRoutes');
-// const customerRoutes = require('./src/routes/customerRoutes');
+const customerRoutes = require('./src/routes/customerRoutes');
 // const notificationRoutes = require('./src/routes/notificationRoutes');
 const agentRoutes = require('./src/routes/agentRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 // const notificationRoutes = require('./src/routes/notificationRoutes');
 
 app.use('/api', ticketRoutes);
-// app.use('/api', customerRoutes);
+app.use('/api', customerRoutes);
 // app.use('/api', userRoutes);
 // app.use('/api', notificationRoutes);
 app.use('/api', agentRoutes);
