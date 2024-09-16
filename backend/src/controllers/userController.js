@@ -59,8 +59,7 @@ exports.createUser = async (req, res) => {
         user = new User({ fullName, email, password: hashedPassword, role });
         await user.save();
 
-        // Handle role-specific schema creation
-        if (role === 'customer') {
+        
         // Handle role-specific schema creation
         if (role === 'customer') {
             const customer = new Customer({
@@ -86,34 +85,18 @@ exports.createUser = async (req, res) => {
         } else if (role === 'manager') {
             const lastManager = await Manager.findOne().sort({ managerId: -1 });
             const newManagerId = lastManager && lastManager.managerId ? Number(lastManager.managerId) + 1 : 1;
-        } else if (role === 'agent') {
-            const lastAgent = await Agent.findOne().sort({ agentId: -1 });
-            const newAgentId = lastAgent && lastAgent.agentId ? Number(lastAgent.agentId) + 1 : 1;
-            const agent = new Agent({
-                agentId: newAgentId,
-                userId: user._id,
-                email,
-                categoryName,
-                availabilityStatus
-            });
-            await agent.save();
-        } else if (role === 'manager') {
-            const lastManager = await Manager.findOne().sort({ managerId: -1 });
-            const newManagerId = lastManager && lastManager.managerId ? Number(lastManager.managerId) + 1 : 1;
             const manager = new Manager({
                 managerId: newManagerId,
                 managerId: newManagerId,
                 userId: user._id,
                 department
-                department
+                
             });
             await manager.save();
         }
 
         res.status(201).json({ message: `${role.charAt(0).toUpperCase() + role.slice(1)} created successfully` });
-        res.status(201).json({ message: `${role.charAt(0).toUpperCase() + role.slice(1)} created successfully` });
     } catch (error) {
-        res.status(500).json({ message: error.message });
         res.status(500).json({ message: error.message });
     }
 };
