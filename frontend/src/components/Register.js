@@ -174,18 +174,22 @@ const Register = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="categoryName"
-                  label="Category Name"
-                  value={categoryName}
-                  onChange={handleChange}
-                  sx={{ mb: 2, maxWidth: '100%' }}
-                />
+                <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    name="categoryName"
+                    value={categoryName}
+                    onChange={handleChange}
+                    label="Category"
+                    required
+                  >
+                    <MenuItem value="billing">Billing</MenuItem>
+                    <MenuItem value="technical">Technical</MenuItem>
+                    <MenuItem value="network issue">Network Issue</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   variant="outlined"
                   fullWidth
@@ -195,7 +199,7 @@ const Register = () => {
                   onChange={handleChange}
                   sx={{ mb: 2, maxWidth: '100%' }}
                 />
-              </Grid>
+              </Grid> */}
             </>
           )}
           <Grid item xs={12}>

@@ -69,18 +69,16 @@ exports.getCustomerTickets =async (req, res) => {
 }
 
 
-exports.getCustomerClosedTickets =async (req, res) => {
-        const customerId = req.params.customerId;
-        const status = req.query.status;
+exports.getCustomerClosedTickets = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const closedTickets = await Ticket.find({ customerId: id, status: 'closed' });
         
-        try {
-            // Fetch tickets based on customer ID and status
-            const tickets = await Ticket.find({ customerId, status });
-        
-            // Return tickets or an empty list if none found
-            res.json(tickets);
-          } catch (err) {
-            console.error('Error fetching tickets:', err);
-            res.status(500).json({ message: 'Server error' });
-          }
-}
+        if (!closedTickets.length) {
+            return res.status(404).json({ message: 'No closed tickets found for this customer' });
+        }
+        res.json(closedTickets);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
