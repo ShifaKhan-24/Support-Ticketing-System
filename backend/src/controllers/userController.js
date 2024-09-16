@@ -27,8 +27,11 @@ exports.createUser = async (req, res) => {
         if (role === 'customer') {
             const customer = new Customer({
                 userId: user._id,
-                phone,
-                address
+
+                phone: req.body.phone,
+                address: req.body.address
+
+               
             });
             await customer.save();
         } else if (role === 'agent') {

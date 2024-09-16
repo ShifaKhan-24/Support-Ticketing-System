@@ -20,7 +20,7 @@ const ClosedTickets = () => {
       }
 
       try {
-        const response = await api.get(`/customers/${customerId}/tickets?status=closed`);
+        const response = await api.get('/customers/${customerId}/tickets/closed');
         setTickets(response.data);
         setLoading(false);
       } catch (err) {

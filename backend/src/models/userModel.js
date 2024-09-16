@@ -10,6 +10,7 @@ const userSchema = new Schema({
   phone: { type: Number},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  
 });
 
 const User = mongoose.model('users', userSchema);

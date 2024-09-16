@@ -8,10 +8,12 @@ const Agent = require('../models/agentModel')
 
 exports.createTicket = async (req, res) => {
     try {
+        // Create the ticket object without agentId
         const ticket = new Ticket({
             ...req.body,
             agentId: undefined  // Explicitly set agentId as undefined at first
         });
+
 
         // Automatically assign an agent only if the ticket is not manually assigned
         if (!ticket.assignedByManager) {
@@ -19,16 +21,17 @@ exports.createTicket = async (req, res) => {
             ticket.agentId = assignedAgentId;
         }
 
+        // Save the ticket with the agentId
         await ticket.save();
 
-    
+        // Create a notification after the ticket is saved
         const notificationData = {
             userId: ticket.customerEmail,
             message: `A new ticket has been created with the subject: ${ticket.subject}`
         };
 
         try {
-            await axios.post('http://localhost:3000/api/notifications', notificationData);
+            await axios.post('http://localhost:3001/api/notifications', notificationData);
         } catch (error) {
             console.error('Error sending notification:', error.message);
         }
@@ -88,9 +91,7 @@ exports.deleteTicket = async (req,res) =>{
         res.status(400).json({ error: error.message });
     
     }
-    
 }
-// controllers/ticketController.js
 
 exports.assignAgentByManager = async (req, res) => {
     try {
@@ -126,4 +127,4 @@ exports.assignAgentByManager = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
-};
+}

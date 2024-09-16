@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
-const roleMiddleware = require('../middleware/roleMiddleware')
-
+const auth = require('../middleware/authMiddleware');
+const roleCheck = require('../middleware/roleCheckMiddleware');
 const userController = require('../controllers/userController');
 
 
@@ -20,10 +19,7 @@ const userController = require('../controllers/userController');
 router.get('/agents', userController.getAllAgents); // Get all agents
 router.get('/email/:email', userController.getCustomerByEmail); // Get customer by email
 
-// router.post('/', userController.createUser);
-router.post('/', authMiddleware,roleMiddleware('manager'), userController.createUser);
-console.log(userController.createUser)
-
+router.post('/', userController.createUser);
 router.get('/', userController.getAllUsers); // Optionally filter by role
 router.get('/:id', userController.getUserById);
 router.put('/:id', userController.updateUserById);
@@ -35,6 +31,6 @@ router.delete('/:id', userController.deleteUserById);
 // router.get('/agents/category/:categoryName', userController.getAgentsByCategory); // Get agents by category
 
 
-// //agents
+//agents
 router.get('/agents', userController.getAllAgents);
 module.exports = router;

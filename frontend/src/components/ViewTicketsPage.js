@@ -30,7 +30,7 @@ const ViewTicketsPage = () => {
         const response = await api.get(`/customers/${customerId}/tickets`);
         setTickets(response.data);
       } catch (err) {
-        setError('Error fetching tickets. Please try again later.');
+        setError('You dont have any tickets go to create tickets to report a problem.');
       } finally {
         setLoading(false);
       }
@@ -70,6 +70,9 @@ const ViewTicketsPage = () => {
 
   return (
     <Box sx={{ width: '100%', padding: '20px', bgcolor: '#F4F6F9', fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>
+      <Typography variant="h4" component="h1" sx={{ mb: 4, color: '#0033A0' }}> {/* Consistent color */}
+        My Tickets
+      </Typography>
       <Grid container spacing={3}>
         {tickets.map((ticket) => (
           <Grid item xs={12} sm={6} md={4} key={ticket.ticketId}>

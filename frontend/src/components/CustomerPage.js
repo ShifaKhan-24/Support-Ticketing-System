@@ -40,7 +40,7 @@ const CustomerPage = () => {
           <Routes>
             <Route path="view-tickets" element={<ViewTicketsPage />} />
             <Route path="create-ticket" element={<CreateTicketForm />} />
-            <Route path="closed-tickets" element={<ClosedTickets />} />
+            {/* <Route path="closed-tickets" element={<ClosedTickets />} /> */}
             <Route path="find-store" element={<FindStore />} />
             <Route path="help" element={<Help />} />
             <Route path="about" element={<About />} />
