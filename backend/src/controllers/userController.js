@@ -1,8 +1,44 @@
 const User = require('../models/userModel');
 const Agent = require('../models/agentModel');
 const Customer = require('../models/customerModel');
+const bcrypt = require('bcryptjs');
 const Manager = require('../models/managerModel');
 // Create a new user (customer, agent, or manager)
+// exports.createUser = async (req, res) => {
+//     try {
+//         const user = new User(req.body);
+//         await user.save();
+
+//         if (user.role === 'agent') {
+//             const agent = new Agent({
+//                 userId: user._id,
+//                 email: user.email,
+//                 categoryName: req.body.categoryName,
+//                 availabilityStatus: req.body.availabilityStatus
+//             });
+//             await agent.save();
+//         } else if (user.role === 'customer') {
+//             const customer = new Customer({
+//                 userId: user._id,
+               
+//                 phone: req.body.phone,
+//                 address: req.body.address
+//             });
+//             await customer.save();
+//         } else if (user.role === 'manager') {
+//             const manager = new Manager({
+//                 userId: user._id,
+//                 department: req.body.department
+//             });
+//             await manager.save();
+//         }
+
+//         res.status(201).json(user);
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
+
 exports.createUser = async (req, res) => {
     try {
         const { fullName, email, password, role, phone, categoryName, availabilityStatus, department } = req.body;
@@ -23,6 +59,8 @@ exports.createUser = async (req, res) => {
         user = new User({ fullName, email, password: hashedPassword, role });
         await user.save();
 
+        // Handle role-specific schema creation
+        if (role === 'customer') {
         // Handle role-specific schema creation
         if (role === 'customer') {
             const customer = new Customer({
@@ -48,16 +86,34 @@ exports.createUser = async (req, res) => {
         } else if (role === 'manager') {
             const lastManager = await Manager.findOne().sort({ managerId: -1 });
             const newManagerId = lastManager && lastManager.managerId ? Number(lastManager.managerId) + 1 : 1;
+        } else if (role === 'agent') {
+            const lastAgent = await Agent.findOne().sort({ agentId: -1 });
+            const newAgentId = lastAgent && lastAgent.agentId ? Number(lastAgent.agentId) + 1 : 1;
+            const agent = new Agent({
+                agentId: newAgentId,
+                userId: user._id,
+                email,
+                categoryName,
+                availabilityStatus
+            });
+            await agent.save();
+        } else if (role === 'manager') {
+            const lastManager = await Manager.findOne().sort({ managerId: -1 });
+            const newManagerId = lastManager && lastManager.managerId ? Number(lastManager.managerId) + 1 : 1;
             const manager = new Manager({
                 managerId: newManagerId,
+                managerId: newManagerId,
                 userId: user._id,
+                department
                 department
             });
             await manager.save();
         }
 
         res.status(201).json({ message: `${role.charAt(0).toUpperCase() + role.slice(1)} created successfully` });
+        res.status(201).json({ message: `${role.charAt(0).toUpperCase() + role.slice(1)} created successfully` });
     } catch (error) {
+        res.status(500).json({ message: error.message });
         res.status(500).json({ message: error.message });
     }
 };
@@ -88,18 +144,57 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // Update user by ID
+// exports.updateUserById = async (req, res) => {
+//     try {
+//         const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+//             new: true,
+//             runValidators: true,
+//         });
+//         if (!user) return res.status(404).json({ error: 'User not found' });
+//         res.json(user);
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
+
 exports.updateUserById = async (req, res) => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const loggedInUser = await User.findById(req.user.userId); // Assuming req.user.userId contains the logged-in user's ID
+
+        // 1. Allow customers to update only their own information
+        if (loggedInUser.role === 'customer') {
+            if (loggedInUser._id.toString() !== user._id.toString()) {
+                return res.status(403).json({ error: 'Access denied. Customers can only update their own information.' });
+            }
+        }
+
+        // 2. Allow managers to update agents and managers
+        if (loggedInUser.role === 'manager') {
+            if (user.role !== 'agent' && user.role !== 'manager') {
+                return res.status(403).json({ error: 'Access denied. Managers can only update agents and managers.' });
+            }
+        }
+
+        // 3. Prevent agents from updating other users
+        if (loggedInUser.role === 'agent') {
+            return res.status(403).json({ error: 'Access denied. Agents cannot update other users.' });
+        }
+
+        // Update user details
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true,
         });
-        if (!user) return res.status(404).json({ error: 'User not found' });
-        res.json(user);
+
+        res.json(updatedUser);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
 
 // Delete user by ID
 exports.deleteUserById = async (req, res) => {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/authMiddleware');
-const roleCheck = require('../middleware/roleCheckMiddleware');
+const roleMiddleware = require('../middleware/roleMiddleware')
 const userController = require('../controllers/userController');
 
 
@@ -19,11 +19,11 @@ const userController = require('../controllers/userController');
 router.get('/agents', userController.getAllAgents); // Get all agents
 router.get('/email/:email', userController.getCustomerByEmail); // Get customer by email
 
-router.post('/', userController.createUser);
-router.get('/', userController.getAllUsers); // Optionally filter by role
+router.post('/', auth,roleMiddleware('manager'), userController.createUser);
+router.get('/', auth,roleMiddleware('manager'),userController.getAllUsers); // Optionally filter by role
 router.get('/:id', userController.getUserById);
-router.put('/:id', userController.updateUserById);
-router.delete('/:id', userController.deleteUserById);
+router.put('/:id',auth, userController.updateUserById); 
+router.delete('/:id',auth,roleMiddleware('manager'), userController.deleteUserById);
 
 
 // // Additional routes

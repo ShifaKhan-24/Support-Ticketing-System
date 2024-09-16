@@ -109,8 +109,8 @@ exports.assignAgentByManager = async (req, res) => {
         if (!agent) {
             return res.status(404).json({ error: `Agent with agentId ${agentId} not found` });
         }
-         // Check if the agent's category matches the ticket's category
-         if (agent.categoryName !== ticket.categoryName) {
+          // Check if the agent's category matches the ticket's category
+          if (agent.categoryName !== ticket.categoryName) {
             return res.status(400).json({ error: `Agent's category (${agent.categoryName}) does not match ticket's category (${ticket.categoryName})` });
         }
 
