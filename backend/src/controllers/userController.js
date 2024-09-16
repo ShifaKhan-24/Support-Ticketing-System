@@ -5,37 +5,63 @@ const Manager = require('../models/managerModel');
 // Create a new user (customer, agent, or manager)
 exports.createUser = async (req, res) => {
     try {
-        const user = new User(req.body);
+        const { fullName, email, password, role, phone, categoryName, availabilityStatus, department } = req.body;
+
+        // Check if the role is valid
+        if (!['customer', 'agent', 'manager'].includes(role)) {
+            return res.status(400).json({ message: 'Invalid role' });
+        }
+
+        // Check if user already exists
+        let user = await User.findOne({ email });
+        if (user) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        // Create the user
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user = new User({ fullName, email, password: hashedPassword, role });
         await user.save();
 
-        if (user.role === 'agent') {
-            const agent = new Agent({
-                userId: user._id,
-                email: user.email,
-                categoryName: req.body.categoryName,
-                availabilityStatus: req.body.availabilityStatus
-            });
-            await agent.save();
-        } else if (user.role === 'customer') {
+        // Handle role-specific schema creation
+        if (role === 'customer') {
             const customer = new Customer({
                 userId: user._id,
+
                 phone: req.body.phone,
                 address: req.body.address
+
+               
             });
             await customer.save();
-        } else if (user.role === 'manager') {
-            const manager = new Manager({
+        } else if (role === 'agent') {
+            const lastAgent = await Agent.findOne().sort({ agentId: -1 });
+            const newAgentId = lastAgent && lastAgent.agentId ? Number(lastAgent.agentId) + 1 : 1;
+            const agent = new Agent({
+                agentId: newAgentId,
                 userId: user._id,
-                department: req.body.department
+                email,
+                categoryName,
+                availabilityStatus
+            });
+            await agent.save();
+        } else if (role === 'manager') {
+            const lastManager = await Manager.findOne().sort({ managerId: -1 });
+            const newManagerId = lastManager && lastManager.managerId ? Number(lastManager.managerId) + 1 : 1;
+            const manager = new Manager({
+                managerId: newManagerId,
+                userId: user._id,
+                department
             });
             await manager.save();
         }
 
-        res.status(201).json(user);
+        res.status(201).json({ message: `${role.charAt(0).toUpperCase() + role.slice(1)} created successfully` });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
+
 
 // Get user by ID
 exports.getUserById = async (req, res) => {
@@ -121,9 +147,5 @@ exports.getAllAgents = async (req, res) => {
 exports.getAgentTickets  =async (req, res) =>{
     res.status(200).json({message:"Tickets assigned to agent"})
 }
-exports.getManagerData = async (req, res) => {
-  
-       res.status(200).json({message:"Manager Data found"})
-    
-};
+
 
