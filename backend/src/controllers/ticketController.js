@@ -2,45 +2,96 @@ const Ticket = require('../models/ticketModel');
 const axios = require('axios');
 const { assignAgent } = require('../services/ticketAssignmentService');
 const Agent = require('../models/agentModel')
-
-
-
+const Attachment = require('../models/attachmentsModel');
 
 exports.createTicket = async (req, res) => {
     try {
-        // Create the ticket object without agentId
-        const ticket = new Ticket({
-            ...req.body,
-            agentId: undefined  // Explicitly set agentId as undefined at first
-        });
+        console.log("req body in ticket controller - ",req.body)
+      // Step 1: Create the ticket object without agentId
+      const ticket = new Ticket({
+        ...req.body,
+        agentId: undefined  // Explicitly set agentId as undefined at first
+      });
+  
+      // Step 2: Automatically assign an agent only if the ticket is not manually assigned
+      if (!ticket.assignedByManager) {
+        const assignedAgentId = await assignAgent(ticket.categoryName);
+        ticket.agentId = assignedAgentId;
+      }
+  
+      // Step 3: Save the ticket with the agentId to get the ticketId
+      const savedTicket = await ticket.save();
+  
+      // Step 4: Handle file uploads only after saving the ticket
+      if (req.files && req.files.length > 0) {
+        const attachments = req.files.map(file => ({
+          ticketId: savedTicket.ticketId,   // Use the saved ticketId here
+          fileUrl: file.location,           // S3 file URL
+          fileType: file.mimetype,
+          fileSize :file.size,
+          categoryName: savedTicket.categoryName
 
-
-        // Automatically assign an agent only if the ticket is not manually assigned
-        if (!ticket.assignedByManager) {
-            const assignedAgentId = await assignAgent(ticket.categoryName);
-            ticket.agentId = assignedAgentId;
-        }
-
-        // Save the ticket with the agentId
-        await ticket.save();
-
-        // Create a notification after the ticket is saved
-        const notificationData = {
-            userId: ticket.customerEmail,
-            message: `A new ticket has been created with the subject: ${ticket.subject}`
-        };
-
-        try {
-            await axios.post('http://localhost:3001/api/notifications', notificationData);
-        } catch (error) {
-            console.error('Error sending notification:', error.message);
-        }
-
-        res.status(201).json(ticket);
+        }));
+  
+        // Save the attachments in the attachments collection
+        const savedAttachments = await Attachment.insertMany(attachments);
+  
+        // Update the ticket with the attachment references
+        savedTicket.attachmentIds = savedAttachments.map(a => a._id);
+        await savedTicket.save();
+      }
+  
+      // Step 5: Create a notification after the ticket is saved
+      const notificationData = {
+        userId: savedTicket.customerEmail,
+        message: `A new ticket has been created with the subject: ${ticket.subject}`
+      };
+  
+      try {
+        await axios.post('http://localhost:3001/api/notifications', notificationData);
+      } catch (error) {
+        console.error('Error sending notification:', error.message);
+      }
+  
+      // Send success response
+      res.status(201).json({ savedTicket, message: ` Files uploaded successfully - ${req.files.length}` });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
-};
+  };
+  
+
+// Adding attachments to an existing ticket
+exports.addAttachments = async (req, res) => {
+    try {
+      const { ticketId } = req.params;
+      const ticket = await Ticket.findById(ticketId);
+  
+      if (!ticket) {
+        return res.status(404).json({ message: 'Ticket not found' });
+      }
+  
+      // Handle file uploads
+      if (req.files && req.files.length > 0) {
+        const attachments = req.files.map(file => ({
+          ticketId: ticket._id,
+          fileUrl: file.location,  // S3 file URL
+          fileType: file.mimetype
+        }));
+  
+        // Save attachments
+        const savedAttachments = await Attachment.insertMany(attachments);
+  
+        // Update the ticket with the new attachments
+        ticket.attachmentIds = [...ticket.attachmentIds, ...savedAttachments.map(a => a._id)];
+        await ticket.save();
+      }
+  
+      res.status(200).json(ticket);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
 
 
 exports.getTicket = async (req, res) => {
@@ -109,8 +160,8 @@ exports.assignAgentByManager = async (req, res) => {
         if (!agent) {
             return res.status(404).json({ error: `Agent with agentId ${agentId} not found` });
         }
-         // Check if the agent's category matches the ticket's category
-         if (agent.categoryName !== ticket.categoryName) {
+          // Check if the agent's category matches the ticket's category
+          if (agent.categoryName !== ticket.categoryName) {
             return res.status(400).json({ error: `Agent's category (${agent.categoryName}) does not match ticket's category (${ticket.categoryName})` });
         }
 

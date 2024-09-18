@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import api from '../services/api';
 import Conversation from './ConversationComponent';
+import FileUpload from './FileUploadComponent';
 
 const ViewTicketsPage = () => {
   const customerId = localStorage.getItem('id');
@@ -230,6 +231,10 @@ const ViewTicketsPage = () => {
                 <Typography variant="body1" sx={{ color: '#333333', mb: 1 }}>
                   <strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}
                 </Typography>
+                <Typography variant="body1" sx={{ color: '#333333', mb: 1 }}>
+                  <strong>Attach File:</strong> 
+                </Typography>
+                <FileUpload ticketId={selectedTicket._id} />
                 <Typography variant="body1" sx={{ color: '#333333', mb: 0  }}>
                   <strong>Discussion:</strong>
                 </Typography>
