@@ -4,9 +4,9 @@ const ticketController = require('../controllers/ticketController');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
-router.post('/tickets', ticketController.createTicket);
+router.post('/tickets',authMiddleware,roleMiddleware('customer'), ticketController.createTicket);
 router.get('/tickets/:id', ticketController.getTicket);
-router.get('/tickets', ticketController.getAllTickets);
+router.get('/tickets', authMiddleware,roleMiddleware('manager'),ticketController.getAllTickets);
 router.put('/tickets/:id', ticketController.updateTicket);
 router.delete('/tickets/:id', ticketController.deleteTicket);
 // routes/ticketRoutes.js

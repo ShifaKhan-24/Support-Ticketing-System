@@ -27,6 +27,6 @@ const managerSchema = new Schema({
       this.updated_at = Date.now();
       next();
   });
-  module.exports = mongoose.model('manager', managerSchema);
+  module.exports = mongoose.model('managers', managerSchema);
   
   
