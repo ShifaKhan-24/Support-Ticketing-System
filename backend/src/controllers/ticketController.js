@@ -42,16 +42,16 @@ exports.createTicket = async (req, res) => {
       }
   
       // Step 5: Create a notification after the ticket is saved
-    //   const notificationData = {
-    //     userId: savedTicket.customerEmail,
-    //     message: `A new ticket has been created with the subject: ${ticket.subject}`
-    //   };
+      const notificationData = {
+        userId: savedTicket.customerEmail,
+        message: `A new ticket has been created with the subject: ${ticket.subject}`
+      };
   
-    //   try {
-    //     await axios.post('http://localhost:3001/api/notifications', notificationData);
-    //   } catch (error) {
-    //     console.error('Error sending notification:', error.message);
-    //   }
+      try {
+        await axios.post('http://localhost:3001/api/notifications', notificationData);
+      } catch (error) {
+        console.error('Error sending notification:', error.message);
+      }
   
       // Send success response
       res.status(201).json({ savedTicket, message: ` Files uploaded successfully - ${req.files.length}` });
@@ -74,9 +74,10 @@ exports.addAttachments = async (req, res) => {
       // Handle file uploads
       if (req.files && req.files.length > 0) {
         const attachments = req.files.map(file => ({
-          ticketId: ticket._id,
+          ticketId: ticket.ticketId,
           fileUrl: file.location,  // S3 file URL
-          fileType: file.mimetype
+          fileType: file.mimetype,
+          categoryName:ticket.categoryName
         }));
   
         // Save attachments
