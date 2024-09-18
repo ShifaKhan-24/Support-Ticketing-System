@@ -25,6 +25,7 @@ const customerRoutes = require('./src/routes/customerRoutes');
 const agentRoutes = require('./src/routes/agentRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const notificationRoutes = require('./src/routes/notificationRoutes');
+const communicationRoutes = require('./src/routes/communicationRoutes');
 
 app.use('/api', ticketRoutes);
 app.use('/api', customerRoutes);
@@ -33,6 +34,7 @@ app.use('/api', notificationRoutes);
 app.use('/api', agentRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api',communicationRoutes);
 
 // Example protected route
 // app.get('/api/manager', checkRole(['manager']), (req, res) => {

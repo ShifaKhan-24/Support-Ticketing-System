@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Box,
-  CircularProgress,
   Typography,
   Chip,
+  CircularProgress,
+  Card,
+  CardContent,
+  Divider,
   Grid,
-  IconButton
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import EmailIcon from '@mui/icons-material/Email';
-import CategoryIcon from '@mui/icons-material/Category';
-import SubjectIcon from '@mui/icons-material/Subject';
-import DescriptionIcon from '@mui/icons-material/Description';
-import DateRangeIcon from '@mui/icons-material/DateRange';
 import api from '../services/api';
+import Conversation from './ConversationComponent'; // Import the Conversation component
 
 const ManageAssignedTickets = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedTicket, setSelectedTicket] = useState(null);
   const agentId = localStorage.getItem('id'); // Get the agent's ID
 
   useEffect(() => {
@@ -40,116 +35,159 @@ const ManageAssignedTickets = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
-        <CircularProgress />
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#F5F5F5' }}>
+        <CircularProgress sx={{ color: '#007BFF' }} />
       </Box>
     );
   }
 
   if (error) {
     return (
-      <Typography color="error" variant="h6" align="center">
+      <Typography color="error" variant="h6" align="center" sx={{ bgcolor: '#F8D7DA', color: '#721C24', p: 2 }}>
         {error}
       </Typography>
     );
   }
 
-  // Function to determine chip colors based on status/priority
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'open':
-        return 'success';
-      case 'closed':
-        return 'error';
-      case 'in-progress':
-        return 'warning';
-      default:
-        return 'default';
-    }
+  const handleTicketClick = (ticket) => {
+    setSelectedTicket(ticket);
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'high':
-        return 'error';
-      case 'medium':
-        return 'warning';
-      case 'low':
-        return 'default';
+  const getBorderColor = (status) => {
+    switch (status) {
+      case 'open':
+        return '#28a745'; // Green for open
+      case 'closed':
+        return '#dc3545'; // Red for closed
+      case 'in-progress':
+        return '#ffc107'; // Yellow for in-progress
       default:
-        return 'default';
+        return '#6c757d'; // Grey for default
     }
   };
 
   return (
-    <Box sx={{ width: '100%', padding: '20px', bgcolor: '#F4F6F9', fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>
-      <Grid container spacing={3}>
-        {tickets.map((ticket) => (
-          <Grid item xs={12} sm={6} md={4} key={ticket.ticketId}>
-            <Accordion
-              sx={{ 
-                marginBottom: 2, 
-                border: '1px solid #B0BEC5', // Soft blue-gray border
-                borderRadius: '16px', // Curved edges
-                boxShadow: 'none', // Remove box shadow
-                '&:before': { // Remove default border-top for Accordion
-                  display: 'none',
-                },
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+    <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#F5F5F5' }}>
+      {/* Sidebar with List */}
+      <Box sx={{ width: '30%', padding: '20px', bgcolor: '#FFFFFF', borderRight: '1px solid #DDDDDD', overflowY: 'auto' }}>
+        <Typography variant="h6" sx={{ color: '#007BFF', mb: 2, fontWeight: 600 }}>
+          Ticket List
+        </Typography>
+        <Grid container spacing={2}>
+          {tickets.map((ticket) => (
+            <Grid item xs={12} key={ticket.ticketId}>
+              <Card 
+                variant="outlined"
                 sx={{ 
-                  backgroundColor: '#FFFFFF', 
-                  borderBottom: '1px solid #B0BEC5'
+                  borderRadius: '8px', 
+                  borderColor: getBorderColor(ticket.status),
+                  cursor: 'pointer', 
+                  '&:hover': { borderColor: '#007BFF' },
+                  bgcolor: '#F9F9F9',
+                  p: 1
                 }}
+                onClick={() => handleTicketClick(ticket)}
               >
-                <Typography variant="h6" sx={{ color: '#333333' }}>
-                  Ticket #{ticket.ticketId}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Box sx={{ padding: 2, bgcolor: '#FFFFFF', borderRadius: '0 0 16px 16px' }}>
-                  <Typography variant="body1" sx={{ color: '#333333', mb: 1 }}>
-                    <IconButton size="small" sx={{ color: '#00ACC1' }}><EmailIcon /></IconButton>
-                    <strong>Customer Email:</strong> {ticket.customerEmail}
+                <CardContent sx={{ padding: '8px' }}>
+                  <Typography variant="h6" sx={{ mb: 1 }}>
+                    Ticket #{ticket.ticketId}
                   </Typography>
-                  <Typography variant="body1" sx={{ color: '#333333', mb: 1 }}>
-                    <IconButton size="small" sx={{ color: '#00ACC1' }}><CategoryIcon /></IconButton>
-                    <strong>Category:</strong> {ticket.categoryName}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: '#333333', mb: 1 }}>
-                    <IconButton size="small" sx={{ color: '#00ACC1' }}><SubjectIcon /></IconButton>
-                    <strong>Subject:</strong> {ticket.subject}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: '#333333', mb: 1 }}>
-                    <IconButton size="small" sx={{ color: '#00ACC1' }}><DescriptionIcon /></IconButton>
-                    <strong>Description:</strong> {ticket.description}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: '#333333', mb: 2 }}>
-                    <IconButton size="small" sx={{ color: '#00ACC1' }}><DateRangeIcon /></IconButton>
-                    <strong>Created At:</strong> {new Date(ticket.created_at).toLocaleString()}
-                  </Typography>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Chip
-                      label={`Status: ${ticket.status}`}
-                      color={getStatusColor(ticket.status)}
-                      sx={{ borderRadius: '16px', padding: '8px', fontWeight: 500 }}
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
+                    <Chip 
+                      label={ticket.status} 
+                      color={getStatusColor(ticket.status)} 
+                      sx={{ borderRadius: '4px', fontWeight: 500, width: '100px' }} 
                     />
-                    <Chip
-                      label={`Priority: ${ticket.priority}`}
-                      color={getPriorityColor(ticket.priority)}
-                      sx={{ borderRadius: '16px', padding: '8px', fontWeight: 500 }}
+                    <Chip 
+                      label={ticket.priority} 
+                      color={getPriorityColor(ticket.priority)} 
+                      sx={{ borderRadius: '4px', fontWeight: 500, width: '100px' }} 
                     />
                   </Box>
-                </Box>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-        ))}
-      </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      {/* Main Content */}
+      <Box sx={{ flex: 1, padding: '20px', bgcolor: '#FFFFFF', overflowY: 'auto' }}>
+        {selectedTicket ? (
+          <>
+            <Card sx={{ p: 3, borderRadius: '8px', mb: 3 }}>
+              <Typography variant="h5" sx={{ color: '#007BFF', mb: 2 }}>
+                Ticket #{selectedTicket.ticketId}
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              <CardContent>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Customer Email:</strong> {selectedTicket.customerEmail}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Category:</strong> {selectedTicket.categoryName}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Subject:</strong> {selectedTicket.subject}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Description:</strong> {selectedTicket.description}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                  <strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}
+                </Typography>
+                <Chip
+                  label={`Status: ${selectedTicket.status}`}
+                  color={getStatusColor(selectedTicket.status)}
+                  sx={{ borderRadius: '4px', fontWeight: 500, mr: 1 }}
+                />
+                <Chip
+                  label={`Priority: ${selectedTicket.priority}`}
+                  color={getPriorityColor(selectedTicket.priority)}
+                  sx={{ borderRadius: '4px', fontWeight: 500 }}
+                />
+                <Typography variant="body1" sx={{ color: '#333333', mb: 0  }}>
+                  <strong>Discussion:</strong>
+                </Typography>
+              </CardContent>
+              <Conversation ticketId={selectedTicket.ticketId} currentUser="support team"/>
+            </Card>
+          </>
+        ) : (
+          <Typography variant="h6" align="center" sx={{ color: '#333333', mt: 5 }}>
+            Select a ticket to view details
+          </Typography>
+        )}
+      </Box>
     </Box>
   );
+};
+
+// Helper functions for colors
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'open':
+      return 'success';
+    case 'closed':
+      return 'error';
+    case 'in-progress':
+      return 'warning';
+    default:
+      return 'default';
+  }
+};
+
+const getPriorityColor = (priority) => {
+  switch (priority) {
+    case 'high':
+      return 'error';
+    case 'medium':
+      return 'warning';
+    case 'low':
+      return 'default';
+    default:
+      return 'default';
+  }
 };
 
 export default ManageAssignedTickets;

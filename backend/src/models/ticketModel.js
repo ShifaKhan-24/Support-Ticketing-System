@@ -1,19 +1,20 @@
 const mongoose = require('mongoose');
-const counterModal = require('./counter.model')
+const counterModal = require('./counter.model');
+const communicationSchema = require('./communicationModel'); // Import the schema
 
 const ticketSchema = new mongoose.Schema({
   ticketId: { type: Number, unique: true }, // Auto-incremented ticket ID
   customerId: { type: Number },
   customerEmail: { type: String, required: true },
-  categoryName:{type:String, required:true, ref:'categories'}, //biiling, technical
-  agentId:{type:Number},    // _id=1,2,
-  status:{type:String, default: 'open'},     // enum type - open-> in progress -> resolved -> 
-  priority:{type:String, default: 'low'},
-  subject:{type:String,required:true},
-  description:{type:String,required:true},
+  categoryName: { type: String, required: true, ref: 'categories' }, // billing, technical
+  agentId: { type: Number }, // _id=1,2,
+  status: { type: String, default: 'open' }, // enum type - open -> in progress -> resolved ->
+  priority: { type: String, default: 'low' },
+  subject: { type: String, required: true },
+  description: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date },
-  communications: {type:Array}
+  communications: [communicationSchema] // Use schema here
 });
 
 ticketSchema.pre('save', async function (next) {
