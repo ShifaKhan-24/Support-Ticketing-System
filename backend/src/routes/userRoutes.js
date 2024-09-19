@@ -16,7 +16,7 @@ const userController = require('../controllers/userController');
 
 // // CRUD operations for users
 
-router.get('/agents', userController.getAllAgents); // Get all agents
+router.get('/agents',auth,roleMiddleware('manager'), userController.getAllAgents); // Get all agents
 router.get('/email/:email', userController.getCustomerByEmail); // Get customer by email
 
 router.post('/', auth,roleMiddleware('manager'), userController.createUser);

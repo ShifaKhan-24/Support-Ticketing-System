@@ -1,22 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const agentController = require('../controllers/agentController');
-const userController = require('../controllers/userController')
-
-// router.post('/agents', agentController.createAgent);
-// router.get('/agents', userController.getAllAgents);
-// console.log(userController.getAllAgents);
-// router.get('/agents/:id', agentController.getAgentById);
-// router.put('/agents/:id', agentController.updateAgentById);
-// router.delete('/agents/:id', agentController.deleteAgentById);
-
+const authMiddleware = require('../middleware/authMiddleware');
+const roleMiddleware =  require('../middleware/roleMiddleware')
 
 // Agent Routes
 // router.post('/agents',agentController.createAgent)
-router.get('/agents', agentController.getAllAgents);
-router.get('/agent/category/:categoryName', agentController.getAgentsByCategory);
-router.put('/agent/:id', agentController.updateAgent);
-router.delete('/agent/:id', agentController.deleteAgent);
+router.get('/agents', authMiddleware,roleMiddleware('manager'),agentController.getAllAgents);
+router.get('/agent/category/:categoryName',authMiddleware,roleMiddleware('manager'), agentController.getAgentsByCategory);
+router.put('/agent/:id', authMiddleware,roleMiddleware('manager'),agentController.updateAgent);
+router.delete('/agent/:id',authMiddleware,roleMiddleware('manager'), agentController.deleteAgent);
 router.get('/agent/:id/tickets',agentController.getAgentTickets);
 router.get('/agent/:id/closed-tickets',agentController.getClosedTickets)
 module.exports = router;
