@@ -74,9 +74,10 @@ exports.addAttachments = async (req, res) => {
       // Handle file uploads
       if (req.files && req.files.length > 0) {
         const attachments = req.files.map(file => ({
-          ticketId: ticket._id,
+          ticketId: ticket.ticketId,
           fileUrl: file.location,  // S3 file URL
-          fileType: file.mimetype
+          fileType: file.mimetype,
+          categoryName:ticket.categoryName
         }));
   
         // Save attachments
