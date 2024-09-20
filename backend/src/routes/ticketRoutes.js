@@ -11,6 +11,8 @@ router.post('/tickets', upload.array('files', 5), ticketController.createTicket)
 // Route for adding attachments to an existing ticket
 router.post('/tickets/:ticketId/attachments', upload.array('files', 5), ticketController.addAttachments);
 
+//Route to get pre-signed URLs for attachments of a ticket
+router.get('/tickets/:ticketId/attachments', ticketController.getAttachments);
 router.get('/tickets/:id', ticketController.getTicket);
 router.get('/tickets', ticketController.getAllTickets);
 router.put('/tickets/:id', ticketController.updateTicket);

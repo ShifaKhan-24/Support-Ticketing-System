@@ -3,6 +3,7 @@ const axios = require('axios');
 const { assignAgent } = require('../services/ticketAssignmentService');
 const Agent = require('../models/agentModel')
 const Attachment = require('../models/attachmentsModel');
+const { getPresignedUrl } = require('../services/generatePresignedUrls')
 
 exports.createTicket = async (req, res) => {
     try {
@@ -94,6 +95,41 @@ exports.addAttachments = async (req, res) => {
     }
   };
 
+  // Controller to get pre-signed URLs for ticket attachments
+  exports.getAttachments = async (req, res) => {
+    try {
+      const { ticketId } = req.params;
+      const attachments = await Attachment.findOne({ ticketId });
+  
+      if (!attachments) {
+        return res.status(404).json({ message: 'No attachments found for this ticket.' });
+      }
+  
+      // Log the attachments to verify the result
+      console.log("Attachments found:", attachments);
+  
+      // Check if the data is in the expected format
+      if (typeof attachments !== 'object') {
+        return res.status(500).json({ message: 'Attachments data is not in the correct format.' });
+      }
+  
+      // Extract the S3 key from the fileUrl (remove the base URL)
+      const s3Key = attachments.fileUrl.replace('https://customer-support-tickets-attachments.s3.ap-south-1.amazonaws.com/', '');
+  
+      // Generate pre-signed URL using the extracted S3 key
+      const presignedUrl = await getPresignedUrl(s3Key);
+  
+      // Add the generated pre-signed URL to the attachment object (using _doc to directly update the document)
+      attachments._doc.presignedUrl = presignedUrl;
+  
+      res.status(200).json(attachments);
+    } catch (error) {
+      console.error('Error generating pre-signed URLs:', error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+  
 
 exports.getTicket = async (req, res) => {
     try {
