@@ -17,6 +17,13 @@ router.get('/tickets/:id', ticketController.getTicket);
 router.get('/tickets', ticketController.getAllTickets);
 router.put('/tickets/:id', ticketController.updateTicket);
 router.delete('/tickets/:id', ticketController.deleteTicket);
+
+// Update ticket priority - Manager access only
+router.put('/tickets/:id/priority', authMiddleware, roleMiddleware('manager'), ticketController.updateTicketPriority);
+
+// Update ticket status - Agent access only
+router.put('/tickets/:id/status', authMiddleware, roleMiddleware('agent'), ticketController.updateTicketStatus);
+
 // routes/ticketRoutes.js
 
 router.put('/tickets/:id/assign', authMiddleware, roleMiddleware('manager'), ticketController.assignAgentByManager);

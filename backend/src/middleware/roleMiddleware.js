@@ -24,7 +24,7 @@ const roleMiddleware = (requiredRole) => {
 
             // Check if user role matches the required role
             if (user.role !== requiredRole) {
-                return res.status(403).json({ error: 'Access denied' });
+                return res.status(403).json({ error: `Access denied. Only ${requiredRole} can perform this action.` });
             }
 
             // Proceed to the next middleware or route handler

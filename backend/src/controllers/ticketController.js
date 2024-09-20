@@ -96,7 +96,7 @@ exports.addAttachments = async (req, res) => {
   };
 
   // Controller to get pre-signed URLs for ticket attachments
-  exports.getAttachments = async (req, res) => {
+exports.getAttachments = async (req, res) => {
     try {
       const { ticketId } = req.params;
       const attachments = await Attachment.findOne({ ticketId });
@@ -128,8 +128,56 @@ exports.addAttachments = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
-  
-  
+ 
+
+// Update ticket priority - For Managers
+exports.updateTicketPriority = async (req, res) => {
+    try {
+        const { priority } = req.body;
+        if (!['Low', 'Medium', 'High','Urgent'].includes(priority)) {
+            return res.status(400).json({ message: 'Invalid priority value' });
+        }
+
+        const ticket = await Ticket.findByIdAndUpdate(
+            req.params.id,
+            { priority, updatedAt: Date.now() },
+            { new: true, runValidators: true }
+        );
+
+        if (!ticket) {
+            return res.status(404).json({ message: 'Ticket not found' });
+        }
+
+        res.status(200).json({ message: 'Ticket priority updated successfully', ticket });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Update ticket status - For Agents
+exports.updateTicketStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['Open', 'In Progress', 'Closed'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid status value' });
+        }
+
+        const ticket = await Ticket.findByIdAndUpdate(
+            req.params.id,
+            { status, updatedAt: Date.now() },
+            { new: true, runValidators: true }
+        );
+
+        if (!ticket) {
+            return res.status(404).json({ message: 'Ticket not found' });
+        }
+
+        res.status(200).json({ message: 'Ticket status updated successfully', ticket });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 exports.getTicket = async (req, res) => {
     try {
