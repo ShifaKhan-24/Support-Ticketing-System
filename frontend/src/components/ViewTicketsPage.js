@@ -25,7 +25,7 @@ const ViewTicketsPage = () => {
         const response = await api.get(`/customers/${customerId}/tickets`);
         setTickets(response.data);
       } catch (err) {
-        setError('You don\'t have any tickets. Go to create tickets to report a problem.');
+        setError('You don\'t have any tickets. Go to create tickets to report an issue.');
       } finally {
         setLoading(false);
       }

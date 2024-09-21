@@ -21,6 +21,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await api.post('/auth/login', formData);
+      console.log(res.data);
       localStorage.setItem('token', res.data.token); // Save the token to local storage
       localStorage.setItem('role', res.data.role); // Save the user role to local storage
       localStorage.setItem('id', res.data.id); // Save the additional ID to local storage

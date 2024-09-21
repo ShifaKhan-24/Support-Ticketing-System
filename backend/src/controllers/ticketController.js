@@ -108,17 +108,49 @@ exports.getTicket = async (req, res) => {
     }
 };
 
-exports.getAllTickets = async (req, res) => {
-    try {
-
-        const tickets = await Ticket.find();
-        
-        res.json(tickets);
-
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
+exports.getTicketByTicketId = async (req, res) => {
+  try {
+      const ticket = await Ticket.findOne({ ticketId: req.params.ticketId }); // Search by ticketId
+      if (!ticket) {
+          return res.status(404).json({ error: 'Ticket not found' });
+      }
+      res.json(ticket);
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
 };
+
+
+exports.getAllTickets = async (req, res) => {
+  try {
+      const filters = {};
+      const { status, priority, category, createdDate } = req.query; // Change to createdDate
+
+      if (status) filters.status = status;
+      if (priority) filters.priority = priority;
+      if (category) filters.categoryName = category;
+
+      // Date filtering (for createdDate)
+      if (createdDate) {
+          const startOfDay = new Date(createdDate);
+          const endOfDay = new Date(createdDate);
+          endOfDay.setHours(23, 59, 59, 999); // Set to the end of the day
+
+          filters.created_at = {
+              $gte: startOfDay,
+              $lte: endOfDay
+          };
+      }
+
+      const tickets = await Ticket.find(filters);
+      res.json(tickets);
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
+};
+
+
+
 
 exports.updateTicket = async (req, res) => {
     try {

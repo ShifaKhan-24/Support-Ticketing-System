@@ -10,7 +10,9 @@ router.get('/agents', authMiddleware,roleMiddleware('manager'),agentController.g
 router.get('/agent/category/:categoryName',authMiddleware,roleMiddleware('manager'), agentController.getAgentsByCategory);
 router.put('/agent/:id', authMiddleware,roleMiddleware('manager'),agentController.updateAgent);
 router.delete('/agent/:id',authMiddleware,roleMiddleware('manager'), agentController.deleteAgent);
+router.get('/agents/agentId/:agentId',authMiddleware,roleMiddleware('manager'), agentController.getAgentById);
 router.get('/agent/:id/tickets',agentController.getAgentTickets);
 router.get('/agent/:id/closed-tickets',agentController.getClosedTickets)
+
 module.exports = router;
 

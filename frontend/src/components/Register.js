@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar, Button, CssBaseline, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Grid, Link, Box } from '@mui/material';
+import { Avatar, Button, CssBaseline, TextField, Typography, Grid, Link, Box } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'; // Ensure this import is correct
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -9,29 +9,15 @@ const Register = () => {
     fullName: '',
     email: '',
     password: '',
-    role: '',
     phone: '',
     address: '',
-    categoryName: '',
-    availabilityStatus: '',
   });
 
   const navigate = useNavigate();
-  const { fullName, email, password, role, phone, address, categoryName, availabilityStatus } = formData;
+  const { fullName, email, password, phone, address } = formData;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleRoleChange = (e) => {
-    const selectedRole = e.target.value;
-    setFormData({
-      ...formData,
-      role: selectedRole,
-      address: '',
-      categoryName: '',
-      availabilityStatus: '',
-    });
   };
 
   const handleSubmit = async (e) => {
@@ -41,10 +27,9 @@ const Register = () => {
         fullName,
         email,
         password,
-        role,
+        role: 'customer', // Role is automatically set to 'customer'
         phone,
-        ...(role === 'customer' && { address }),
-        ...(role === 'agent' && { categoryName, availabilityStatus }),
+        address,
       });
       alert('User registered successfully');
       navigate('/'); // Redirect to login page after successful registration
@@ -116,92 +101,28 @@ const Register = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <FormControl fullWidth variant="outlined" sx={{ mb: 2, maxWidth: '100%' }}>
-              <InputLabel>Role</InputLabel>
-              <Select
-                name="role"
-                value={role}
-                onChange={handleRoleChange}
-                required
-                label="Role"
-              >
-                <MenuItem value="">Select Role</MenuItem>
-                <MenuItem value="agent">Agent</MenuItem>
-                <MenuItem value="customer">Customer</MenuItem>
-                <MenuItem value="manager">Manager</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              name="phone"
+              label="Phone"
+              value={phone}
+              onChange={handleChange}
+              sx={{ mb: 2, maxWidth: '100%' }}
+            />
           </Grid>
-          {role === 'customer' && (
-            <>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="phone"
-                  label="Phone"
-                  value={phone}
-                  onChange={handleChange}
-                  sx={{ mb: 2, maxWidth: '100%' }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  name="address"
-                  label="Address"
-                  value={address}
-                  onChange={handleChange}
-                  sx={{ mb: 2, maxWidth: '100%' }}
-                />
-              </Grid>
-            </>
-          )}
-          {role === 'agent' && (
-            <>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="phone"
-                  label="Phone"
-                  value={phone}
-                  onChange={handleChange}
-                  sx={{ mb: 2, maxWidth: '100%' }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-                  <InputLabel>Category</InputLabel>
-                  <Select
-                    name="categoryName"
-                    value={categoryName}
-                    onChange={handleChange}
-                    label="Category"
-                    required
-                  >
-                    <MenuItem value="billing">Billing</MenuItem>
-                    <MenuItem value="technical">Technical</MenuItem>
-                    <MenuItem value="network issue">Network Issue</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              {/* <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  name="availabilityStatus"
-                  label="Availability Status"
-                  value={availabilityStatus}
-                  onChange={handleChange}
-                  sx={{ mb: 2, maxWidth: '100%' }}
-                />
-              </Grid> */}
-            </>
-          )}
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              name="address"
+              label="Address"
+              value={address}
+              onChange={handleChange}
+              sx={{ mb: 2, maxWidth: '100%' }}
+            />
+          </Grid>
           <Grid item xs={12}>
             <Button
               type="submit"

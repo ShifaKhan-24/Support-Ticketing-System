@@ -84,6 +84,9 @@ exports.login = async (req, res) => {
     } else if (user.role === 'customer') {
       const customer = await Customer.findOne({ userId: user._id });
       additionalId = customer ? customer.customerId : null;
+    }else if (user.role === 'manager') {
+      const manager = await Manager.findOne({ userId: user._id });
+      additionalId = manager ? manager.managerId : null;
     }
 
     res.status(200).json({ token, role: user.role, id: additionalId });

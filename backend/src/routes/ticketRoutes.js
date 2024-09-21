@@ -18,6 +18,6 @@ router.delete('/tickets/:id', ticketController.deleteTicket);
 // routes/ticketRoutes.js
 
 router.put('/tickets/:id/assign', authMiddleware, roleMiddleware('manager'), ticketController.assignAgentByManager);
-
+router.get('/tickets/ticketId/:ticketId', ticketController.getTicketByTicketId);
 
 module.exports = router;

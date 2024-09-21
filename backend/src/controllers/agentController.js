@@ -5,8 +5,38 @@ const Ticket = require("../models/ticketModel");
 // Get all agents with user details
 exports.getAllAgents = async (req, res) => {
     try {
-        const agents = await Agent.find().populate('userId');
+        const { availabilityStatus, categoryName } = req.query; // Get availabilityStatus and categoryName from query parameters
+
+        // Build the query object
+        const query = {};
+        if (availabilityStatus && availabilityStatus !== 'all') {
+            query.availabilityStatus = availabilityStatus; // Add availability filter
+        }
+        if (categoryName && categoryName !== 'all') {
+            query.categoryName = categoryName; // Add category filter
+        }
+
+        // Fetch agents based on the query
+        const agents = await Agent.find(query).populate('userId');
         res.json(agents);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
+exports.getAgentById = async (req, res) => {
+    try {
+        const { agentId } = req.params; // Get agentId from URL parameters
+
+        const agent = await Agent.findOne({ agentId }).populate('userId');
+        
+        if (!agent) {
+            return res.status(404).json({ message: 'Agent not found' });
+        }
+
+        res.json(agent);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
