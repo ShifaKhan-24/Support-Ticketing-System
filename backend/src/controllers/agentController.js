@@ -99,3 +99,16 @@ exports.getClosedTickets = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getOpenTickets = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const tickets = await Ticket.find({ agentId: id, status: 'open' });
+        if (!tickets.length) {
+            return res.status(404).json({ message: 'No tickets assigned to the agent.' });
+        }
+        res.json(tickets);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
