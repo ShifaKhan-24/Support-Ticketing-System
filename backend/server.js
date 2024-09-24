@@ -21,13 +21,14 @@ app.use(cors(corsOptions));
 const authRoutes = require('./src/routes/authRoutes');
 const ticketRoutes = require('./src/routes/ticketRoutes');
 const customerRoutes = require('./src/routes/customerRoutes');
-// const notificationRoutes = require('./src/routes/notificationRoutes');
+const managerRoutes = require('./src/routes/managerRoutes');
 const agentRoutes = require('./src/routes/agentRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const notificationRoutes = require('./src/routes/notificationRoutes');
 
 app.use('/api', ticketRoutes);
 app.use('/api', customerRoutes);
+app.use('/api',managerRoutes)
 // app.use('/api', userRoutes);
 app.use('/api', notificationRoutes);
 app.use('/api', agentRoutes);
