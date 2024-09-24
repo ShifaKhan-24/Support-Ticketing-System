@@ -51,7 +51,7 @@ const TeamPerformance = () => {
 
   useEffect(() => {
     fetchTeamData();
-  }, [filterStatus, filterCategory]);
+  }, [filterStatus, filterCategory,fetchTeamData]);
 
   const clearSearchAndFilter = () => {
     setSearchedAgent(null);

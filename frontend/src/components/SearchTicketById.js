@@ -32,7 +32,7 @@ const SearchTicketById = ({ onSearchResult, resetSearch }) => {
     if (resetSearch) {
       handleClear();
     }
-  }, [resetSearch]);
+  }, [resetSearch,handleClear]);
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>

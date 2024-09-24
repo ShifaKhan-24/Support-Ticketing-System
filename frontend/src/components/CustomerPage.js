@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import ViewTicketsPage from './ViewTicketsPage';
 import CreateTicketForm from './CreateTicketForm'; // Placeholder
-import ClosedTickets from './ClosedTickets'; // Placeholder
 import FindStore from './FindStore'; // Placeholder
 import Help from './Help'; // Placeholder
 import About from './About'; // Placeholder
