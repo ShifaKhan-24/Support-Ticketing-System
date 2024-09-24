@@ -5,7 +5,7 @@ const ticketSchema = new mongoose.Schema({
   ticketId: { type: Number, unique: true }, // Auto-incremented ticket ID
   customerId: { type: Number },
   customerEmail: { type: String, required: true },
-  categoryName:{type:String, required:true, ref:'categories'}, //biiling, technical
+  categoryName:{type:String, required:true}, //biiling, technical
   agentId:{type:Number},    // _id=1,2,
   status:{type:String, default: 'open'},     // enum type - open-> in progress -> resolved -> 
   priority:{type:String, default: 'low'},
@@ -13,7 +13,8 @@ const ticketSchema = new mongoose.Schema({
   description:{type:String,required:true},
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date },
-  communications: {type:Array}
+  communications: {type:Array},
+  attachmentIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'attachments' }]
 });
 
 ticketSchema.pre('save', async function (next) {

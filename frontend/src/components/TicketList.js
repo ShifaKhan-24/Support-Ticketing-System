@@ -1,5 +1,5 @@
 import React from 'react';
-import TicketItem from './TicketItem'; // Import TicketItem component
+import TicketItem from '../components/TicketItem'; // Import TicketItem component
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const TicketList = ({ tickets }) => {
@@ -38,7 +38,7 @@ const TicketList = ({ tickets }) => {
           </TableHead>
           <TableBody>
             {tickets.map(ticket => (
-              <TicketItem key={ticket._id} ticket={ticket} />
+              <TicketItem key={ticket.ticketId} ticket={ticket} />
             ))}
           </TableBody>
         </Table>

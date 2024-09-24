@@ -117,13 +117,13 @@ const Register = () => {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth variant="outlined" sx={{ mb: 2, maxWidth: '100%' }}>
-              <InputLabel>Role</InputLabel>
+              <InputLabel id='Role'>Role</InputLabel>
               <Select
                 name="role"
                 value={role}
                 onChange={handleRoleChange}
                 required
-                label="Role"
+                labelId="Role"
               >
                 <MenuItem value="">Select Role</MenuItem>
                 <MenuItem value="agent">Agent</MenuItem>
