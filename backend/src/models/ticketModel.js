@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const counterModal = require('./counter.model')
+const counterModal = require('./counter.model');
+const communicationSchema = require('./communicationModel'); // Import the schema
 
 const ticketSchema = new mongoose.Schema({
   ticketId: { type: Number, unique: true }, // Auto-incremented ticket ID
@@ -13,7 +14,7 @@ const ticketSchema = new mongoose.Schema({
   description:{type:String,required:true},
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date },
-  communications: {type:Array},
+  communications: [communicationSchema],
   attachmentIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'attachments' }]
 });
 
