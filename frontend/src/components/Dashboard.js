@@ -17,7 +17,15 @@ const Dashboard = () => {
       } else {
         navigate('/'); // Redirect to login if no customerId is found
       }
-    } else {
+    } 
+    else if (role === 'manager') {
+      if (role === 'manager') {
+        navigate(`/manager`);
+      } else {
+        navigate('/'); 
+      }
+    }
+    else {
       navigate('/'); // Redirect to login if no role is found
     }
   }, [navigate, role, id]);

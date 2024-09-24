@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import api from '../services/api';
 import Conversation from './ConversationComponent'; // Import the Conversation component
+import TicketActions from './TicketActions'; // Import the TicketActions component
 
 const ManageAssignedTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -33,6 +34,33 @@ const ManageAssignedTickets = () => {
     fetchTickets();
   }, [agentId]);
 
+  const handleTicketClick = (ticket) => {
+    setSelectedTicket(ticket); // Set selected ticket directly
+  };
+
+  // Function to re-fetch tickets
+  const refreshTickets = async () => {
+    const response = await api.get(`/agent/${agentId}/tickets`);
+    setTickets(response.data);
+    if (selectedTicket) {
+      const updatedTicket = response.data.find(ticket => ticket._id === selectedTicket._id);
+      setSelectedTicket(updatedTicket);
+    }
+  };
+
+  const getBorderColor = (status) => {
+    switch (status) {
+      case 'open':
+        return '#28a745'; // Green for open
+      case 'closed':
+        return '#dc3545'; // Red for closed
+      case 'in-progress':
+        return '#ffc107'; // Yellow for in-progress
+      default:
+        return '#6c757d'; // Grey for default
+    }
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#F5F5F5' }}>
@@ -49,30 +77,13 @@ const ManageAssignedTickets = () => {
     );
   }
 
-  const handleTicketClick = (ticket) => {
-    setSelectedTicket(ticket);
-  };
-
-  const getBorderColor = (status) => {
-    switch (status) {
-      case 'open':
-        return '#28a745'; // Green for open
-      case 'closed':
-        return '#dc3545'; // Red for closed
-      case 'in-progress':
-        return '#ffc107'; // Yellow for in-progress
-      default:
-        return '#6c757d'; // Grey for default
-    }
-  };
-
   return (
     <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#F5F5F5' }}>
       {/* Sidebar with List */}
       <Box sx={{ width: '30%', padding: '20px', bgcolor: '#FFFFFF', borderRight: '1px solid #DDDDDD', overflowY: 'auto' }}>
-        <Typography variant="h6" sx={{ color: '#007BFF', mb: 2, fontWeight: 600 }}>
+        {/* <Typography variant="h6" sx={{ color: '#007BFF', mb: 2, fontWeight: 600 }}>
           Ticket List
-        </Typography>
+        </Typography> */}
         <Grid container spacing={2}>
           {tickets.map((ticket) => (
             <Grid item xs={12} key={ticket.ticketId}>
@@ -114,45 +125,56 @@ const ManageAssignedTickets = () => {
       {/* Main Content */}
       <Box sx={{ flex: 1, padding: '20px', bgcolor: '#FFFFFF', overflowY: 'auto' }}>
         {selectedTicket ? (
-          <>
-            <Card sx={{ p: 3, borderRadius: '8px', mb: 3 }}>
-              <Typography variant="h5" sx={{ color: '#007BFF', mb: 2 }}>
-                Ticket #{selectedTicket.ticketId}
+          <Card sx={{ p: 3, borderRadius: '8px', mb: 3 }}>
+            <Typography variant="h5" sx={{ color: '#007BFF', mb: 2 }}>
+              Ticket #{selectedTicket.ticketId}
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            <CardContent>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                <strong>Customer Email:</strong> {selectedTicket.customerEmail}
               </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <CardContent>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Customer Email:</strong> {selectedTicket.customerEmail}
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Category:</strong> {selectedTicket.categoryName}
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Subject:</strong> {selectedTicket.subject}
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Description:</strong> {selectedTicket.description}
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 2 }}>
-                  <strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}
-                </Typography>
-                <Chip
-                  label={`Status: ${selectedTicket.status}`}
-                  color={getStatusColor(selectedTicket.status)}
-                  sx={{ borderRadius: '4px', fontWeight: 500, mr: 1 }}
-                />
-                <Chip
-                  label={`Priority: ${selectedTicket.priority}`}
-                  color={getPriorityColor(selectedTicket.priority)}
-                  sx={{ borderRadius: '4px', fontWeight: 500 }}
-                />
-                <Typography variant="body1" sx={{ color: '#333333', mb: 0  }}>
-                  <strong>Discussion:</strong>
-                </Typography>
-              </CardContent>
-              <Conversation ticketId={selectedTicket.ticketId} currentUser="support team"/>
-            </Card>
-          </>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                <strong>Category:</strong> {selectedTicket.categoryName}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                <strong>Subject:</strong> {selectedTicket.subject}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                <strong>Description:</strong> {selectedTicket.description}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                <strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                <strong>Updated At:</strong> {new Date(selectedTicket.updated_at).toLocaleDateString()}
+              </Typography>
+              <Chip
+                label={`Status: ${selectedTicket.status}`}
+                color={getStatusColor(selectedTicket.status)}
+                sx={{ borderRadius: '4px', fontWeight: 500, mr: 1 }}
+              />
+              <Chip
+                label={`Priority: ${selectedTicket.priority}`}
+                color={getPriorityColor(selectedTicket.priority)}
+                sx={{ borderRadius: '4px', fontWeight: 500 }}
+              />
+              <Typography variant="body1">
+                <strong>Change status/priority:</strong> 
+              </Typography>
+              {/* Ticket Actions Integration */}
+              <TicketActions 
+                ticketId={selectedTicket._id} 
+                initialStatus={selectedTicket.status} 
+                initialPriority={selectedTicket.priority} 
+                onUpdate={refreshTickets} // Call refreshTickets after update
+              />
+              <Typography variant="body1" sx={{ color: '#333333', mb: 0 }}>
+                <strong>Discussion:</strong>
+              </Typography>
+            </CardContent>
+            <Conversation ticketId={selectedTicket.ticketId} currentUser="support team" />
+          </Card>
         ) : (
           <Typography variant="h6" align="center" sx={{ color: '#333333', mt: 5 }}>
             Select a ticket to view details
@@ -170,7 +192,7 @@ const getStatusColor = (status) => {
       return 'success';
     case 'closed':
       return 'error';
-    case 'in-progress':
+    case 'in progress':
       return 'warning';
     default:
       return 'default';

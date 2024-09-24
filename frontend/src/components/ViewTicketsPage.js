@@ -25,7 +25,7 @@ const ViewTicketsPage = () => {
         const response = await api.get(`/customers/${customerId}/tickets`);
         setTickets(response.data);
       } catch (err) {
-        setError('You don\'t have any tickets. Go to create tickets to report a problem.');
+        setError('You don\'t have any tickets. Go to create tickets to report an issue.');
       } finally {
         setLoading(false);
       }
@@ -64,13 +64,13 @@ const ViewTicketsPage = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', padding: '20px', bgcolor: '#F4F6F9', display: 'flex' }}>
+    <Box sx={{ width: '100%', padding: '20px', bgcolor: '#FFFFFF', display: 'flex' }}>
       
       {/* Side panel for ticket IDs */}
-      <Box sx={{ width: '25%', maxHeight: '100vh', overflowY: 'auto', paddingRight: 2, borderRight: '1px solid #E0E0E0' }}>
-        <Box sx={{ mb: 2, borderBottom: '2px solid #0033A0', paddingBottom: 1 }}>
+      <Box sx={{ width: '25%', maxHeight: '150vh', overflowY: 'auto', paddingRight: 2, borderRight: '1px solid #E0E0E0' }}>
+        {/* <Box sx={{ mb: 2, borderBottom: '2px solid #0033A0', paddingBottom: 1 }}>
           <Typography variant="h6" sx={{ color: '#0033A0', fontWeight: 'bold' }}>Ticket List</Typography>
-        </Box>
+        </Box> */}
         <Grid container spacing={2} direction="column">
           {tickets.map((ticket) => (
             <Grid item key={ticket.ticketId}>
