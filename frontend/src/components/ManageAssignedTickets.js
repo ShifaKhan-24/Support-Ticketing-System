@@ -146,6 +146,9 @@ const ManageAssignedTickets = () => {
               <Typography variant="body1" sx={{ mb: 2 }}>
                 <strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}
               </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                <strong>Updated At:</strong> {new Date(selectedTicket.updated_at).toLocaleDateString()}
+              </Typography>
               <Chip
                 label={`Status: ${selectedTicket.status}`}
                 color={getStatusColor(selectedTicket.status)}

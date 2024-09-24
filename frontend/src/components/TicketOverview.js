@@ -19,6 +19,8 @@ import TicketStats from './TicketStats';
 import SearchTicketById from './SearchTicketById';
 import TicketCommunications from './TicketCommunications'; // Import the TicketCommunications component
 import DashboardOverview from './DashboardOverview'; // Import the DashboardOverview component
+import AssignAgent from './AssignAgent';
+import PriorityUpdate from './PriorityUpdate';
 
 const TicketOverview = () => {
   const [ticketData, setTicketData] = useState([]);
@@ -72,6 +74,25 @@ const TicketOverview = () => {
     const ticket = searchResult ? searchResult : ticketData.find(t => t.ticketId === ticketId);
     setSelectedTicket(ticket);
   };
+  const refreshTicketData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.get('/tickets', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      setTicketData(response.data);
+      if (selectedTicket) {
+        const updatedTicket = response.data.find(ticket => ticket._id === selectedTicket._id);
+        setSelectedTicket(updatedTicket);
+      }
+    } catch (error) {
+      console.error('Error fetching ticket data:', error);
+    }
+  };
+
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -200,14 +221,27 @@ const TicketOverview = () => {
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>Subject:</strong> {selectedTicket.subject}</Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>Description:</strong> {selectedTicket.description}</Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>AgentId:</strong> {selectedTicket.agentId}</Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}><strong>Assign/Reassign the ticket:</strong></Typography>
+                {/* Include the AssignAgent component */}
+                <AssignAgent ticketId={selectedTicket._id} onAssign={refreshTicketData} />
                 <Typography variant="body1" sx={{ mb: 2 }}><strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}</Typography>
                 <Typography variant="body1" sx={{ mb: 2 }}><strong>Updated At:</strong> {new Date(selectedTicket.updated_at).toLocaleDateString()}</Typography>
                 <Chip label={`Status: ${selectedTicket.status}`} color={getStatusColor(selectedTicket.status)} sx={{ mb: 2 }} />
                 <Chip label={`Priority: ${selectedTicket.priority}`} color={getPriorityColor(selectedTicket.priority)} sx={{ mb: 2 }} />
+                <Typography variant="body1" sx={{ mb: 1 }}><strong>Update Priority:</strong></Typography>
+                {/* Ticket Actions */}
+                <PriorityUpdate 
+                  ticketId={selectedTicket._id}
+                  initialPriority={selectedTicket.priority} 
+                  onUpdate={refreshTicketData} // Refresh data after action
+                />  
+                <Typography variant="body1" sx={{ mb: 1 }}><strong>Discussion:</strong></Typography>
+                {/* Ticket Communications */}
+              <TicketCommunications ticketId={selectedTicket.ticketId} />            
               </CardContent>
+              
 
-              {/* Ticket Communications */}
-              <TicketCommunications ticketId={selectedTicket.ticketId} />
+              
             </Card>
           ) : (
             <>

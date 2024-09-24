@@ -15,6 +15,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import api from '../services/api';
 import AgentSearch from './AgentSearch';
 import TeamStats from './TeamStats';
+import AgentDetails from './AgentDetails'; // Import the AgentDetails component
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Green tick for available
 import CancelIcon from '@mui/icons-material/Cancel'; // Grey cross for offline
 import AlarmIcon from '@mui/icons-material/AccessAlarm'; // Red circle for busy
@@ -27,6 +28,7 @@ const TeamPerformance = () => {
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchId, setSearchId] = useState('');
   const [resetSearch, setResetSearch] = useState(false);
+  const [selectedAgentId, setSelectedAgentId] = useState(null); // State to hold the selected agent ID
 
   const fetchTeamData = async () => {
     try {
@@ -57,6 +59,7 @@ const TeamPerformance = () => {
     setFilterCategory('all');
     setSearchId('');
     setResetSearch(true);
+    setSelectedAgentId(null);
     setTimeout(() => setResetSearch(false), 0);
     fetchTeamData();
   };
@@ -72,6 +75,10 @@ const TeamPerformance = () => {
       default:
         return <CircleOutlinedIcon sx={{ color: 'grey', fontSize: '20px' }} />; // Empty grey circle
     }
+  };
+
+  const handleAgentSelect = (agentId) => {
+    setSelectedAgentId(agentId); // Set the selected agent ID
   };
 
   return (
@@ -132,7 +139,11 @@ const TeamPerformance = () => {
               </Card>
             ) : (
               teamData.map((agent) => (
-                <Card key={agent.agentId} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', marginBottom: '10px' }}>
+                <Card
+                  key={agent.agentId}
+                  sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', marginBottom: '10px' }}
+                  onClick={() => handleAgentSelect(agent.agentId)} // Set selected agent on click
+                >
                   <CardContent sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="h6" sx={{ marginRight: '10px' }}>Agent ID: {agent.agentId}</Typography>
                     {getAvailabilityIcon(agent.availabilityStatus)}
@@ -143,12 +154,14 @@ const TeamPerformance = () => {
           </Box>
         </Grid>
 
-        {/* Right Side - Agent Details */}
+        {/* Right Side - Agent Details or Team Stats */}
         <Grid item xs={12} md={8} sx={{ padding: '20px', overflowY: 'auto', height: '100%' }}>
-          {/* You can add the agent details section here if needed */}
-          {/* <Typography variant="h5" sx={{ color: '#007BFF' }}>Agent Details</Typography> */}
-          <TeamStats />
-          {/* Details content would go here */}
+          {/* Render AgentDetails if an agent is selected, otherwise render TeamStats */}
+          {selectedAgentId ? (
+            <AgentDetails agentId={selectedAgentId} />
+          ) : (
+            <TeamStats />
+          )}
         </Grid>
       </Grid>
     </Box>
