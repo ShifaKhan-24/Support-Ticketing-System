@@ -12,7 +12,7 @@ pipeline {
         stage('Install Backend Dependencies') {
             steps {
                 dir('backend') { // Navigate to the backend directory
-                    sh 'npm install' // Install Node.js dependencies
+                    bat 'npm install' // Install Node.js dependencies
                 }
             }
         }
@@ -20,7 +20,7 @@ pipeline {
         stage('Install Frontend Dependencies') {
             steps {
                 dir('frontend') { // Navigate to the frontend directory
-                    sh 'npm install' // Install React dependencies
+                    bat 'npm install' // Install React dependencies
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('backend') { // Navigate to the backend directory
-                    sh 'npm run build' // Build the Node.js application (if applicable)
+                    bat 'npm run build' // Build the Node.js application (if applicable)
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('frontend') { // Navigate to the frontend directory
-                    sh 'npm run build' // Build the React application
+                    bat 'npm run build' // Build the React application
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 dir('frontend') { // Navigate to the backend directory
-                    sh 'npm test' // Run tests for the Node.js application
+                    bat 'npm test' // Run tests for the Node.js application
                 }
             }
         }
