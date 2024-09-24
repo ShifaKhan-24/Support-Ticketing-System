@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useCallback} from 'react';
 import {
   Box,
   Typography,
@@ -27,10 +27,10 @@ const TeamPerformance = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchId, setSearchId] = useState('');
-  const [resetSearch, setResetSearch] = useState(false);
+  const [, setResetSearch] = useState(false);
   const [selectedAgentId, setSelectedAgentId] = useState(null); // State to hold the selected agent ID
 
-  const fetchTeamData = async () => {
+  const fetchTeamData = useCallback( async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await api.get('/agents', {
@@ -47,7 +47,7 @@ const TeamPerformance = () => {
     } catch (error) {
       console.error('Error fetching agent data:', error);
     }
-  };
+  },[filterStatus,filterCategory]);
 
   useEffect(() => {
     fetchTeamData();
