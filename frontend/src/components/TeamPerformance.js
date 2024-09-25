@@ -17,9 +17,8 @@ import AgentSearch from './AgentSearch';
 import TeamStats from './TeamStats';
 import AgentDetails from './AgentDetails'; // Import the AgentDetails component
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Green tick for available
-import CancelIcon from '@mui/icons-material/Cancel'; // Grey cross for offline
-import AlarmIcon from '@mui/icons-material/AccessAlarm'; // Red circle for busy
-import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'; // Empty grey circle
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';  // Grey cross for offline
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'; // Red circle for busy
 
 const TeamPerformance = () => {
   const [teamData, setTeamData] = useState([]);
@@ -69,11 +68,11 @@ const TeamPerformance = () => {
       case 'available':
         return <CheckCircleIcon sx={{ color: 'green', fontSize: '20px' }} />;
       case 'busy':
-        return <AlarmIcon sx={{ color: 'red', fontSize: '20px' }} />;
+        return <FiberManualRecordIcon sx={{ color: 'red', fontSize: '20px' }} />;
       case 'offline':
-        return <CancelIcon sx={{ color: 'grey', fontSize: '20px' }} />;
+        return <RemoveCircleIcon sx={{ color: 'grey', fontSize: '20px' }} />;
       default:
-        return <CircleOutlinedIcon sx={{ color: 'grey', fontSize: '20px' }} />; // Empty grey circle
+        return <FiberManualRecordIcon sx={{ color: 'grey', fontSize: '20px' }} />; // Empty grey circle
     }
   };
 

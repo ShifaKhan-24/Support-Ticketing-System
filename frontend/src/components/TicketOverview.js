@@ -21,6 +21,7 @@ import TicketCommunications from './TicketCommunications'; // Import the TicketC
 import DashboardOverview from './DashboardOverview'; // Import the DashboardOverview component
 import AssignAgent from './AssignAgent';
 import PriorityUpdate from './PriorityUpdate';
+import ViewUploadedFilesButton from './ViewUploadedFilesButton';
 
 const TicketOverview = () => {
   const [ticketData, setTicketData] = useState([]);
@@ -144,7 +145,7 @@ const TicketOverview = () => {
                   <MenuItem value="all">All</MenuItem>
                   <MenuItem value="open">Open</MenuItem>
                   <MenuItem value="closed">Closed</MenuItem>
-                  <MenuItem value="in-progress">In Progress</MenuItem>
+                  <MenuItem value="in progress">In Progress</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -220,13 +221,14 @@ const TicketOverview = () => {
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>Category:</strong> {selectedTicket.categoryName}</Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>Subject:</strong> {selectedTicket.subject}</Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>Description:</strong> {selectedTicket.description}</Typography>
+                <ViewUploadedFilesButton ticketId = {selectedTicket.ticketId}/>
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>AgentId:</strong> {selectedTicket.agentId}</Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>Assign/Reassign the ticket:</strong></Typography>
                 {/* Include the AssignAgent component */}
                 <AssignAgent ticketId={selectedTicket._id} onAssign={refreshTicketData} />
                 <Typography variant="body1" sx={{ mb: 2 }}><strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}</Typography>
                 <Typography variant="body1" sx={{ mb: 2 }}><strong>Updated At:</strong> {new Date(selectedTicket.updated_at).toLocaleDateString()}</Typography>
-                <Chip label={`Status: ${selectedTicket.status}`} color={getStatusColor(selectedTicket.status)} sx={{ mb: 2 }} />
+                <Chip label={`Status: ${selectedTicket.status}`} color={getStatusColor(selectedTicket.status)} sx={{ mb: 2, mr: 2 }} />
                 <Chip label={`Priority: ${selectedTicket.priority}`} color={getPriorityColor(selectedTicket.priority)} sx={{ mb: 2 }} />
                 <Typography variant="body1" sx={{ mb: 1 }}><strong>Update Priority:</strong></Typography>
                 {/* Ticket Actions */}

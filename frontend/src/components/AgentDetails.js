@@ -1,10 +1,8 @@
-// AgentDetails.js
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card, CardContent } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Available
-import CancelIcon from '@mui/icons-material/Cancel'; // Offline
-import AlarmIcon from '@mui/icons-material/AccessAlarm'; // Busy
-import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'; // Unknown status
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'; // Busy
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'; // Unknown status
 import api from '../services/api';
 
 const AgentDetails = ({ agentId }) => {
@@ -26,22 +24,38 @@ const AgentDetails = ({ agentId }) => {
         setAgentDetails(agentResponse.data);
         
         // Fetching assigned tickets
-        const assignedResponse = await api.get(`/agent/${agentId}/tickets`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        setAssignedTickets(assignedResponse.data.length);
+        try {
+          const assignedResponse = await api.get(`/agent/${agentId}/tickets`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          setAssignedTickets(assignedResponse.data.length);
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            setAssignedTickets(0); // Set count to zero on 404
+          } else {
+            console.error('Error fetching assigned tickets:', error);
+          }
+        }
         
         // Fetching closed tickets
-        const closedResponse = await api.get(`/agent/${agentId}/closed-tickets`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        setClosedTickets(closedResponse.data.length);
+        try {
+          const closedResponse = await api.get(`/agent/${agentId}/closed-tickets`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          setClosedTickets(closedResponse.data.length);
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            setClosedTickets(0); // Set count to zero on 404
+          } else {
+            console.error('Error fetching closed tickets:', error);
+          }
+        }
       } catch (error) {
         console.error('Error fetching agent details:', error);
       }
@@ -62,11 +76,11 @@ const AgentDetails = ({ agentId }) => {
       case 'available':
         return <CheckCircleIcon sx={{ color: 'green', fontSize: '24px' }} />;
       case 'busy':
-        return <AlarmIcon sx={{ color: 'red', fontSize: '24px' }} />;
+        return <FiberManualRecordIcon sx={{ color: 'red', fontSize: '24px' }} />;
       case 'offline':
-        return <CancelIcon sx={{ color: 'grey', fontSize: '24px' }} />;
+        return <RemoveCircleIcon sx={{ color: 'grey', fontSize: '24px' }} />;
       default:
-        return <CircleOutlinedIcon sx={{ color: 'grey', fontSize: '24px' }} />;
+        return <FiberManualRecordIcon sx={{ color: 'grey', fontSize: '24px' }} />;
     }
   };
 

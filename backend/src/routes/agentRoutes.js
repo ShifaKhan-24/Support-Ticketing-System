@@ -14,6 +14,12 @@ router.get('/agents', authMiddleware,roleMiddleware('manager'),agentController.g
 router.get('/agents/category/:categoryName',authMiddleware,roleMiddleware('manager'), agentController.getAgentsByCategory);
 router.put('/agents/:id', authMiddleware,roleMiddleware('manager'),agentController.updateAgent);
 router.delete('/agent/:id',authMiddleware,roleMiddleware('manager'), agentController.deleteAgent);
+router.get('/agents/agentId/:agentId',authMiddleware,roleMiddleware(['manager', 'agent']), agentController.getAgentById);
+router.get('/agent/:id/tickets',agentController.getAgentTickets);
+router.get('/agent/:id/closed-tickets',agentController.getClosedTickets);
+router.get('/agent/:id/open-tickets',agentController.getOpenTickets);
+router.put('/agent/:agentId/availability', agentController.updateAvailabilityStatus);
+router.get('/agent/:agentId/availability', agentController.getAvailabilityStatus);
 
 module.exports = router;
 

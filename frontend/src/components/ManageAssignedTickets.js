@@ -12,6 +12,7 @@ import {
 import api from '../services/api';
 import Conversation from './ConversationComponent'; // Import the Conversation component
 import TicketActions from './TicketActions'; // Import the TicketActions component
+import ViewUploadedFilesButton from './ViewUploadedFilesButton';
 
 const ManageAssignedTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -54,8 +55,8 @@ const ManageAssignedTickets = () => {
         return '#28a745'; // Green for open
       case 'closed':
         return '#dc3545'; // Red for closed
-      case 'in-progress':
-        return '#ffc107'; // Yellow for in-progress
+      case 'in progress':
+        return '#FFC107'; // Yellow for in-progress
       default:
         return '#6c757d'; // Grey for default
     }
@@ -143,6 +144,7 @@ const ManageAssignedTickets = () => {
               <Typography variant="body1" sx={{ mb: 1 }}>
                 <strong>Description:</strong> {selectedTicket.description}
               </Typography>
+              <ViewUploadedFilesButton ticketId = {selectedTicket.ticketId}/>
               <Typography variant="body1" sx={{ mb: 2 }}>
                 <strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}
               </Typography>

@@ -114,13 +114,13 @@ exports.getAttachments = async (req, res) => {
       }
   
       // Extract the S3 key from the fileUrl (remove the base URL)
-      const s3Key = attachments.fileUrl.replace('https://customer-support-tickets-attachments.s3.ap-south-1.amazonaws.com/', '');
+      const s3Key = attachments.fileUrl.replace('https://customer-support-ticketing-system.s3.eu-north-1.amazonaws.com/', '');
   
       // Generate pre-signed URL using the extracted S3 key
       const presignedUrl = await getPresignedUrl(s3Key);
   
       // Add the generated pre-signed URL to the attachment object (using _doc to directly update the document)
-      attachments._doc.presignedUrl = presignedUrl;
+      attachments._doc.presignedUrl = presignedUrl; 
   
       res.status(200).json(attachments);
     } catch (error) {
@@ -154,30 +154,65 @@ exports.updateTicketPriority = async (req, res) => {
     }
 };
 
-// Update ticket status - For Agents
 exports.updateTicketStatus = async (req, res) => {
     try {
         const { status } = req.body;
+
+        // Validate the status
         if (!['open', 'in progress', 'closed'].includes(status)) {
             return res.status(400).json({ message: 'Invalid status value' });
         }
 
-        const ticket = await Ticket.findByIdAndUpdate(
-            req.params.id,
-            { status, updatedAt: Date.now() },
-            { new: true, runValidators: true }
-        );
+        // Find the ticket by ID
+        const ticket = await Ticket.findById(req.params.id);
 
+        // Check if the ticket was found
         if (!ticket) {
             return res.status(404).json({ message: 'Ticket not found' });
         }
 
+        // Prevent updates if the ticket is already closed
+        if (ticket.status === 'closed') {
+            return res.status(400).json({ message: 'Cannot update a closed ticket' });
+        }
+
+        // Ensure valid forward transitions only (open -> in progress -> closed)
+        const validTransitions = {
+            'open': ['in progress'],          // Can only move from 'open' to 'in progress'
+            'in progress': ['closed'],        // Can only move from 'in progress' to 'closed'
+        };
+
+        // Check if the new status is a valid transition
+        if (!validTransitions[ticket.status]?.includes(status)) {
+            return res.status(400).json({
+                message: `Invalid status transition from ${ticket.status} to ${status}`,
+            });
+        }
+
+        // Update the ticket status
+        ticket.status = status;
+        ticket.updatedAt = Date.now();
+        await ticket.save();
+
+        // Prepare notification data
+        const notificationData = {
+            userId: ticket.customerEmail, // Assuming customerEmail is the identifier for the user
+            message: `The status of your ticket (ID: ${ticket.ticketId}) has been updated to: ${ticket.status}.`
+        };
+
+        // Send notification
+        try {
+            await axios.post('http://localhost:3001/api/notifications', notificationData);
+        } catch (error) {
+            console.error('Error sending notification:', error.message);
+        }
+
+        // Respond with the updated ticket information
         res.status(200).json({ message: 'Ticket status updated successfully', ticket });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
-
 
 exports.getTicket = async (req, res) => {
     try {
