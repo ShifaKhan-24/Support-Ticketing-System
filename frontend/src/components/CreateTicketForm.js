@@ -6,7 +6,6 @@ import api from '../services/api'; // Adjust import according to your project st
 
 const CreateTicketForm = () => {
   const customerId = localStorage.getItem('id');
-  const [customerEmail, setCustomerEmail] = useState('');
   const [categoryName, setCategoryName] = useState('');
   const [priority, setPriority] = useState('low');
   const [subject, setSubject] = useState('');
@@ -16,10 +15,11 @@ const CreateTicketForm = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [uploadingFiles, setUploadingFiles] = useState(false); // Track file upload status
+  const email = localStorage.getItem('email');
 
   // Form validation logic
   const validateForm = () => {
-    if (!customerEmail || !categoryName || !subject || !description) {
+    if (!categoryName || !subject || !description) {
       setError('Please fill out all required fields.');
       return false;
     }
@@ -48,7 +48,7 @@ const CreateTicketForm = () => {
     try {
       const formData = new FormData();
       formData.append('customerId', customerId);
-      formData.append('customerEmail', customerEmail);
+      formData.append('customerEmail', email);
       formData.append('categoryName', categoryName);
       formData.append('priority', priority);
       formData.append('subject', subject);
@@ -69,7 +69,6 @@ const CreateTicketForm = () => {
 
       setSuccessMessage('Ticket created successfully!');
       // Clear the form
-      setCustomerEmail('');
       setCategoryName('');
       setPriority('low');
       setSubject('');
@@ -105,18 +104,6 @@ const CreateTicketForm = () => {
       {successMessage && <Alert severity="success" sx={{ mb: 2 }}>{successMessage}</Alert>}
       <form onSubmit={handleSubmit}>
         <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            value={customerEmail}
-            onChange={(e) => setCustomerEmail(e.target.value)}
-            required
-            variant="outlined"
-            sx={{ bgcolor: '#FFFFFF' }} // White background for input
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
           <FormControl fullWidth variant="outlined">
             <InputLabel>Category</InputLabel>
             <Select
@@ -127,7 +114,7 @@ const CreateTicketForm = () => {
             >
               <MenuItem value="billing">Billing</MenuItem>
               <MenuItem value="technical">Technical</MenuItem>
-              <MenuItem value="network issue">Network Issue</MenuItem>
+              <MenuItem value="network">Network Issue</MenuItem>
             </Select>
           </FormControl>
         </Box>

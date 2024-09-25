@@ -39,15 +39,15 @@ const AgentPage = () => {
         padding: '20px',
         display: 'flex',
         flexDirection: 'column',
-        bgcolor: '#F4F6F9' // Consistent light gray background
+        bgcolor: '#FFFFFF' // Consistent light gray background
       }}>
-        <Paper elevation={2} sx={{
+        {/* <Paper elevation={2} sx={{
           flex: 1,
           bgcolor: '#FFFFFF', // White background for paper
           borderRadius: '16px', // Matching the rounded corners
           padding: '20px',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' // Light shadow for paper
-        }}>
+        }}> */}
           <Typography variant="h6" sx={{
             marginBottom: '20px',
             fontWeight: 600,
@@ -60,7 +60,9 @@ const AgentPage = () => {
             <Route path="closed-tickets" element={<AgentClosedTickets />} />
             <Route path="/" element={<ManageAssignedTickets />} /> {/* Default route */}
           </Routes>
-        </Paper>
+        {/* </Paper> */}
+
+        
       </Box>
     </Box>
   );

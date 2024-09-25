@@ -87,67 +87,66 @@ const TicketActions = ({ ticketId, initialStatus, initialPriority, onUpdate }) =
     <Box sx={{ mt: 1, p: 1 }}>
       <ToastContainer />
       <Grid container alignItems="center">
-  <Grid item xs={12}>
-    <Box display="flex" alignItems="center">
-      <Select
-        value={status}
-        onChange={handleStatusChange}
-        sx={{
-          height: 35,
-          maxWidth: '150px',
-          borderRadius: '4px',
-          fontSize: '0.875rem',
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#ccc',
-          },
-          '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#888',
-          },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#0056b3',
-          },
-          marginRight: '4px', // Adjust margin to bring fields closer
-        }}
-        variant="outlined"
-        fullWidth
-        disabled={loading}
-      >
-        <MenuItem value="open">Open</MenuItem>
-        <MenuItem value="in progress">In Progress</MenuItem>
-        <MenuItem value="closed">Closed</MenuItem>
-      </Select>
+        <Grid item xs={12}>
+          <Box display="flex" alignItems="center">
+            <Select
+              value={status}
+              onChange={handleStatusChange}
+              sx={{
+                height: 35,
+                maxWidth: '150px',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#ccc',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#888',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#0056b3',
+                },
+                marginRight: '4px',
+              }}
+              variant="outlined"
+              fullWidth
+              disabled={loading || status === 'closed'} // Disable if the ticket is closed
+            >
+              <MenuItem value="open" disabled={status !== 'open'}>Open</MenuItem>
+              <MenuItem value="in progress" disabled={status === 'closed' || status === 'in progress'}>In Progress</MenuItem>
+              <MenuItem value="closed" disabled={status === 'closed' || status === 'open'}>Closed</MenuItem>
+            </Select>
 
-      <Select
-        value={priority}
-        onChange={handlePriorityChange}
-        sx={{
-          height: 35,
-          maxWidth: '150px',
-          borderRadius: '4px',
-          fontSize: '0.875rem',
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#ccc',
-          },
-          '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#888',
-          },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#0056b3',
-          },
-          marginLeft: '4px', // Adjust margin to bring fields closer
-        }}
-        variant="outlined"
-        fullWidth
-        disabled={loading}
-      >
-        <MenuItem value="low">Low</MenuItem>
-        <MenuItem value="medium">Medium</MenuItem>
-        <MenuItem value="high">High</MenuItem>
-      </Select>
-    </Box>
-  </Grid>
-</Grid>
-
+            <Select
+              value={priority}
+              onChange={handlePriorityChange}
+              sx={{
+                height: 35,
+                maxWidth: '150px',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#ccc',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#888',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#0056b3',
+                },
+                marginLeft: '4px',
+              }}
+              variant="outlined"
+              fullWidth
+              disabled={loading || status === 'closed'} // Disable if the ticket is closed
+            >
+              <MenuItem value="low">Low</MenuItem>
+              <MenuItem value="medium">Medium</MenuItem>
+              <MenuItem value="high">High</MenuItem>
+            </Select>
+          </Box>
+        </Grid>
+      </Grid>
 
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>
