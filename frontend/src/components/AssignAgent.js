@@ -102,8 +102,12 @@ const AssignAgent = ({ ticketId, onAssign }) => {
           width: '220px',
         }}
         variant="outlined"
+        displayEmpty 
         disabled={loading}
       >
+        <MenuItem value="" disabled>
+          Select Agent
+        </MenuItem>
         {agents.map((agent) => (
           <MenuItem key={agent.agentId} value={agent.agentId}>
             {agent.email}
@@ -142,7 +146,7 @@ const AssignAgent = ({ ticketId, onAssign }) => {
           },
         }}
       >
-        <CheckCircle sx={{ fontSize: '1.5rem', color: 'green' }} /> {/* Icon for the button */}
+        <CheckCircle sx={{ fontSize: '1.5rem', color: 'grey' }} /> {/* Icon for the button */}
       </Button>
 
       <Dialog

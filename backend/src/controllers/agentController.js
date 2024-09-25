@@ -112,3 +112,51 @@ exports.getOpenTickets = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+// Update availability status of an agent
+exports.updateAvailabilityStatus = async (req, res) => {
+  const { agentId } = req.params;  // Assuming you're passing agentId in the URL
+  const { availabilityStatus } = req.body;  // New availability status from the request body
+
+  try {
+    // Find the agent by agentId and update the availabilityStatus
+    const updatedAgent = await Agent.findOneAndUpdate(
+      { agentId: agentId },  // Find the agent by their agentId
+      { availabilityStatus: availabilityStatus },  // Update the availabilityStatus
+      { new: true }  // Return the updated agent after modification
+    );
+
+    if (!updatedAgent) {
+      return res.status(404).json({ message: 'Agent not found' });
+    }
+
+    res.status(200).json({
+      message: 'Availability status updated successfully',
+      agent: updatedAgent
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating availability status', error });
+  }
+};
+
+exports.getAvailabilityStatus = async (req, res) => {
+    const { agentId } = req.params;  // Assuming you're passing agentId in the URL
+  
+    try {
+      // Find the agent by agentId
+      const agent = await Agent.findOne({ agentId: agentId });
+  
+      if (!agent) {
+        return res.status(404).json({ message: 'Agent not found' });
+      }
+  
+      // Respond with the current availability status
+      res.status(200).json({
+        availabilityStatus: agent.availabilityStatus,
+        agentId: agent.agentId,
+        message: 'Agent availability status fetched successfully'
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching availability status', error });
+    }
+  };

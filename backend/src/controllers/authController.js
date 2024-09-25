@@ -81,19 +81,19 @@ exports.login = async (req, res) => {
     if (user.role === 'agent') {
       const agent = await Agent.findOne({ userId: user._id });
       additionalId = agent ? agent.agentId : null;
+      roleId = agent ? agent._id : null;
     } else if (user.role === 'customer') {
       const customer = await Customer.findOne({ userId: user._id });
       additionalId = customer ? customer.customerId : null;
-    }else if (user.role === 'manager') {
-      const manager = await Manager.findOne({ userId: user._id });
-      additionalId = manager ? manager.managerId : null;
+      roleId = customer ? customer._id : null;
     }
     else if (user.role === 'manager') {
       const manager = await Manager.findOne({ userId: user._id });
       additionalId = manager ? manager.managerId : null;
+      roleId = manager ? manager._id : null;
     }
 
-    res.status(200).json({ token, role: user.role, id: additionalId });
+    res.status(200).json({ token, role: user.role, id: additionalId,userId:user._id, roleId , email});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

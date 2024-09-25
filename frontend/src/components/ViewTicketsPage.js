@@ -11,6 +11,7 @@ import {
 import api from '../services/api';
 import Conversation from './ConversationComponent';
 import FileUpload from './FileUploadComponent';
+import ViewUploadedFilesButton from './ViewUploadedFilesButton';
 
 const ViewTicketsPage = () => {
   const customerId = localStorage.getItem('id');
@@ -56,7 +57,7 @@ const ViewTicketsPage = () => {
         return '#4CAF50'; // Green for open
       case 'closed':
         return '#F44336'; // Red for closed
-      case 'in-progress':
+      case 'in progress':
         return '#FFC107'; // Yellow for in-progress
       default:
         return '#9E9E9E'; // Grey for others
@@ -231,6 +232,7 @@ const ViewTicketsPage = () => {
                 <Typography variant="body1" sx={{ color: '#333333', mb: 1 }}>
                   <strong>Created At:</strong> {new Date(selectedTicket.created_at).toLocaleDateString()}
                 </Typography>
+                <ViewUploadedFilesButton ticketId = {selectedTicket.ticketId}/>
                 <Typography variant="body1" sx={{ color: '#333333', mb: 1 }}>
                   <strong>Attach File:</strong> 
                 </Typography>

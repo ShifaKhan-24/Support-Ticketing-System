@@ -6,15 +6,16 @@ const Ticket = require("../models/ticketModel");
 exports.getCustomerById = async (req, res) => {
     try {
         const customer = await Customer.findById(req.params.id);
+        
         if (!customer) {
             return res.status(404).json({ message: "Customer not found" });
         }
 
-        // Check if the requesting user is the customer or a manager
-        if ((req.user.role === 'customer' && req.user._id.toString() !== customer._id.toString())|| req.user.role === 'agent') {
-            return res.status(403).json({ message: `Access denied: ${req.user.role}'s can only view their own information` });
-        }
-
+        // // Check if the requesting user is the customer or a manager
+        // if ((req.user.role === 'customer' && req.user._id.toString() !== customer._id.toString())|| req.user.role === 'agent') {
+        //     return res.status(403).json({ message: `Access denied: ${req.user.role}'s can only view their own information` });
+        // }
+        // console.log(customer);
         res.json(customer);
     } catch (err) {
         res.status(500).json({ message: "Error fetching customer" });

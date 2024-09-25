@@ -21,10 +21,13 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await api.post('/auth/login', formData);
-      console.log(res.data);
       localStorage.setItem('token', res.data.token); // Save the token to local storage
       localStorage.setItem('role', res.data.role); // Save the user role to local storage
       localStorage.setItem('id', res.data.id); // Save the additional ID to local storage
+      localStorage.setItem('userId', res.data.userId);
+      localStorage.setItem('roleId', res.data.roleId);
+      localStorage.setItem('email', res.data.email);
+
       navigate('/dashboard'); // Redirect to the dashboard after successful login
     } catch (error) {
       console.error(error.response.data.message);
