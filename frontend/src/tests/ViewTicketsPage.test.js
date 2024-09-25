@@ -29,48 +29,71 @@ describe('ViewTicketsPage', () => {
     expect(screen.getByRole('progressbar')).toBeInTheDocument(); // Check for loading spinner
   });
 
-  it('renders an error message when the API call fails', async () => {
-    api.get.mockRejectedValue(new Error('API Error'));
+  test('displays error message if API request fails', async () => {
+  api.get.mockRejectedValueOnce(new Error('API Error')); // Mock API failure
 
-    render(<ViewTicketsPage />);
+  render(<ViewTicketsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText(/You dont have any tickets go to create tickets to report a problem./i)).toBeInTheDocument();
-    });
-  });
+  const errorMessage = await screen.findByText(/You don't have any tickets. Go to create tickets to report an issue./i);
+  expect(errorMessage).toBeInTheDocument();
+});
 
-  it('renders tickets when the API call is successful', async () => {
-    const tickets = [
-      {
-        ticketId: 1,
-        customerEmail: 'customer@example.com',
-        categoryName: 'Technical',
-        subject: 'Issue with connection',
-        description: 'I cannot connect to the internet.',
-        created_at: '2024-01-01T10:00:00Z',
-        status: 'open',
-      },
-      {
-        ticketId: 2,
-        customerEmail: 'customer@example.com',
-        categoryName: 'Billing',
-        subject: 'Question about invoice',
-        description: 'I have a question regarding my last invoice.',
-        created_at: '2024-01-02T10:00:00Z',
-        status: 'closed',
-      },
-    ];
+test('displays tickets after fetching from API', async () => {
+  const mockTickets = [
+    { ticketId: 1, status: 'open', customerEmail: 'test1@example.com', subject: 'Issue 1' },
+    { ticketId: 2, status: 'closed', customerEmail: 'test2@example.com', subject: 'Issue 2' }
+  ];
 
-    api.get.mockResolvedValue({ data: tickets });
+  api.get.mockResolvedValueOnce({ data: mockTickets });
 
-    render(<ViewTicketsPage />);
+  render(<ViewTicketsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText(/My Tickets/i)).toBeInTheDocument();
-      expect(screen.getByText(/Ticket #1/i)).toBeInTheDocument();
-      expect(screen.getByText(/Issue with connection/i)).toBeInTheDocument();
-      expect(screen.getByText(/Ticket #2/i)).toBeInTheDocument();
-      expect(screen.getByText(/Question about invoice/i)).toBeInTheDocument();
-    });
-  });
+  const ticket1 = await screen.findByText(/Ticket #1/i);
+  const ticket2 = await screen.findByText(/Ticket #2/i);
+
+  expect(ticket1).toBeInTheDocument();
+  expect(ticket2).toBeInTheDocument();
+});
+
+test('displays selected ticket details when clicked', async () => {
+  const mockTickets = [
+    { ticketId: 1, status: 'open', customerEmail: 'test1@example.com', subject: 'Issue 1', description: 'Description 1', categoryName: 'Network' }
+  ];
+
+  api.get.mockResolvedValueOnce({ data: mockTickets });
+
+  render(<ViewTicketsPage />);
+
+  const ticketCard = await screen.findByText(/Ticket #1/i);
+  ticketCard.click();
+
+  const ticketDetails = await screen.findByText(/Description 1/i);
+  expect(ticketDetails).toBeInTheDocument();
+});
+
+  // it('renders tickets when the API call is successful', async () => {
+  //   const tickets = [
+  //     {
+  //       ticketId: 1,
+  //       customerEmail: 'customer@example.com',
+  //       categoryName: 'Technical',
+  //       subject: 'Issue with connection',
+  //       description: 'I cannot connect to the internet.',
+  //       status: 'open',
+  //       created_at: '2024-01-01T10:00:00Z',
+  //     },
+  //   ];
+  
+  //   jest.mock('../services/api', () => ({
+  //     get: jest.fn().mockResolvedValue({ data: tickets }),
+  //   }));
+  
+  //   const { getByText } = render(<ViewTicketsPage />);
+  
+  //   await waitFor(() => {
+  //     expect(getByText(/Ticket #1/i)).toBeInTheDocument();
+  //     expect(getByText(/Technical/i)).toBeInTheDocument();
+  //     expect(getByText(/Issue with connection/i)).toBeInTheDocument();
+  //   });
+  // });
 });

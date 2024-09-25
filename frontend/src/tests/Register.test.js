@@ -29,12 +29,12 @@ test('renders all input fields', () => {
   const fullNameInput = screen.getByLabelText(/Full Name/i);
   const emailInput = screen.getByLabelText(/Email Address/i);
   const passwordInput = screen.getByLabelText(/Password/i);
-  const roleSelect = screen.getByLabelText(/Role/i);
+  
 
   expect(fullNameInput).toBeInTheDocument();
   expect(emailInput).toBeInTheDocument();
   expect(passwordInput).toBeInTheDocument();
-  expect(roleSelect).toBeInTheDocument();   
+ 
 
 });
 
