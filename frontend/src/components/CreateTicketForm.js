@@ -114,7 +114,7 @@ const CreateTicketForm = () => {
             >
               <MenuItem value="billing">Billing</MenuItem>
               <MenuItem value="technical">Technical</MenuItem>
-              <MenuItem value="network">Network Issue</MenuItem>
+              <MenuItem value="network">Network</MenuItem>
             </Select>
           </FormControl>
         </Box>
