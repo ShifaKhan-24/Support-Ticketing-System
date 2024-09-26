@@ -173,6 +173,7 @@ const TicketOverview = () => {
                   <MenuItem value="all">All</MenuItem>
                   <MenuItem value="technical">Technical</MenuItem>
                   <MenuItem value="billing">Billing</MenuItem>
+                  <MenuItem value="network">Network</MenuItem>
                   {/* Add more categories as needed */}
                 </Select>
               </FormControl>

@@ -55,7 +55,7 @@ exports.createTicket = async (req, res) => {
       }
   
       // Send success response
-      res.status(201).json({ savedTicket, message: ` Files uploaded successfully - ${req.files.length}` });
+      res.status(201).json({savedTicket});
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

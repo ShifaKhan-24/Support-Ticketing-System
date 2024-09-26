@@ -3,41 +3,7 @@ const Agent = require('../models/agentModel');
 const Customer = require('../models/customerModel');
 const bcrypt = require('bcryptjs');
 const Manager = require('../models/managerModel');
-// Create a new user (customer, agent, or manager)
-// exports.createUser = async (req, res) => {
-//     try {
-//         const user = new User(req.body);
-//         await user.save();
 
-//         if (user.role === 'agent') {
-//             const agent = new Agent({
-//                 userId: user._id,
-//                 email: user.email,
-//                 categoryName: req.body.categoryName,
-//                 availabilityStatus: req.body.availabilityStatus
-//             });
-//             await agent.save();
-//         } else if (user.role === 'customer') {
-//             const customer = new Customer({
-//                 userId: user._id,
-               
-//                 phone: req.body.phone,
-//                 address: req.body.address
-//             });
-//             await customer.save();
-//         } else if (user.role === 'manager') {
-//             const manager = new Manager({
-//                 userId: user._id,
-//                 department: req.body.department
-//             });
-//             await manager.save();
-//         }
-
-//         res.status(201).json(user);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
 
 exports.createUser = async (req, res) => {
     try {
@@ -126,20 +92,6 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// Update user by ID
-// exports.updateUserById = async (req, res) => {
-//     try {
-//         const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-//             new: true,
-//             runValidators: true,
-//         });
-//         if (!user) return res.status(404).json({ error: 'User not found' });
-//         res.json(user);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
-
 exports.updateUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -225,5 +177,3 @@ exports.getAllAgents = async (req, res) => {
 exports.getAgentTickets  =async (req, res) =>{
     res.status(200).json({message:"Tickets assigned to agent"})
 }
-
-
