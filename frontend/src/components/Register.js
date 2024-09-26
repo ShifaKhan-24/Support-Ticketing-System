@@ -138,6 +138,14 @@ const Register = () => {
       </form>
       <div style={{ marginTop: 16, textAlign: 'center' }}>
         <Typography variant="body2" color="textSecondary">
+          {'Already have an account? '}
+          <Link color="inherit" href="/Login">
+            Login here
+          </Link>
+        </Typography>
+      </div>
+      <div style={{ marginTop: 16, textAlign: 'center' }}>
+        <Typography variant="body2" color="textSecondary">
           {'Copyright © '}
           <Link color="inherit" href="https://mui.com/">
             MyHelpDesk

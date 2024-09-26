@@ -115,7 +115,6 @@ const Profile = () => {
 
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <Typography variant="body2" color="textSecondary">Phone: {user.phone ? user.phone : 'Not provided'}</Typography>
             {/* <Typography variant="body1" sx={{ color: '#555' }}>
               {user.phone ? user.phone : 'Not provided'}
             </Typography> */}
@@ -136,6 +135,7 @@ const Profile = () => {
                 )}
                 {role === 'customer' && (
                   <>
+                    <Typography variant="body2" color="textSecondary">Phone: {roleDetails.phone ? roleDetails.phone : 'Not provided'}</Typography>
                     <Typography variant="body2" color="textSecondary">Address: {roleDetails.address}</Typography>
                     {/* <Typography variant="body1" sx={{ color: '#555' }}>{roleDetails.address}</Typography> */}
                   </>
