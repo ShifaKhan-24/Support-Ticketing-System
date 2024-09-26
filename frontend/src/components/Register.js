@@ -139,7 +139,7 @@ const Register = () => {
       <div style={{ marginTop: 16, textAlign: 'center' }}>
         <Typography variant="body2" color="textSecondary">
           {'Already have an account? '}
-          <Link color="inherit" href="/Login">
+          <Link color="inherit" href="/">
             Login here
           </Link>
         </Typography>
