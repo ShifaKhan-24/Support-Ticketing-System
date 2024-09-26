@@ -5,7 +5,7 @@ const multer = require('multer')
 const upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: process.env.AWS_S3_BUCKET_NAME, // Bucket name from .env
+    bucket: process.env.AWS_S3_BUCKET_NAMEn || "customer-support-ticketing-attachments", // Bucket name from .env
    
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
