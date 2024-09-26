@@ -18,4 +18,4 @@ RUN rm -rf node_modules  # In case it still gets copied accidentally
 EXPOSE 3000
 
 # Command to run the application (pointing to server.js)
-CMD ["node", "backend/server.js"]
+CMD ["node", "server.js"]
