@@ -2,7 +2,7 @@
 FROM node:18-alpine
 
 # Set working directory
-WORKDIR /app
+WORKDIR /backend
 
 # Copy package.json and package-lock.json (if available) first for caching
 COPY package*.json ./
