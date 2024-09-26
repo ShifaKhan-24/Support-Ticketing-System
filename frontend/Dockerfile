@@ -10,12 +10,11 @@ COPY package*.json ./
 # Install dependencies (production only)
 RUN npm run build 
 
-
 RUN npm install --production
 
 # Copy everything except the node_modules folder
 COPY . ./
-RUN rm -rf node_modules  # In case it still gets copied accidentally
+# RUN rm -rf node_modules  # In case it still gets copied accidentally
 
 # Expose the port your app runs on
 EXPOSE 3000
