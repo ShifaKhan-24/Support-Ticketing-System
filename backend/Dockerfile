@@ -10,9 +10,8 @@ COPY package*.json ./
 # Install dependencies (production only)
 RUN npm install --production
 
-# Copy everything from the 'backend' folder to /app in the container
-COPY . ./
-RUN rm -rf node_modules  # In case it still gets copied accidentally
+# Copy everything from the 'backend' folder to the working directory in the container
+COPY . .
 
 # Expose the application port
 EXPOSE 3000
