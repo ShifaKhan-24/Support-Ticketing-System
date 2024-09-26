@@ -8,6 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies (production only)
+RUN npm build
+
 RUN npm install --production
 
 # Copy everything except the node_modules folder
