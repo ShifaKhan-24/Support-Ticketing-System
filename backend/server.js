@@ -8,8 +8,9 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+// CORS options
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your frontend URL
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Frontend URL from env variable
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -57,7 +58,7 @@ connectDB();
 
 // Start the server only if not in test mode
 if (process.env.NODE_ENV !== 'test') {
-  const PORT = process.env.PORT || 3001;
+  const PORT = process.env.PORT || 3001; // Dynamic port for Azure
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
