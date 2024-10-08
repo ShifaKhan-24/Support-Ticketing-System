@@ -114,7 +114,7 @@ exports.getAttachments = async (req, res) => {
       }
   
       // Extract the S3 key from the fileUrl (remove the base URL)
-      const s3Key = attachments.fileUrl.replace('https://customer-support-ticketing-system.s3.us-east-1.amazonaws.com/', '');
+      const s3Key = attachments.fileUrl.replace('https://customer-support-ticketing-system.s3.eu-north-1.amazonaws.com/', '');
   
       // Generate pre-signed URL using the extracted S3 key
       const presignedUrl = await getPresignedUrl(s3Key);
